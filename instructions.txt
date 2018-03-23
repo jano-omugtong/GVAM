@@ -1,0 +1,17 @@
+*cmd at C:\Program Files\MongoDB\Server\3.4\bin
+
+export database
+
+option 1 - mongodump (entire db intoÅ@BSON format)
+command : mongodump -d <database> -o <directory>
+
+option 2 - mongoexport (per collection into JSON format)
+command : mongoexport -d <database> -c <collection> -o <directory/[filename].json>
+
+import database
+
+1 - mongorestore
+command : mongorestore -d <database> <directory/database folder>
+
+2 - mongoimport
+command : mongoimport -d <database> -c <collection> <directory/[filename].json>
