@@ -1,0 +1,198 @@
+
+<div style = "text-align:center" class = "spinner" ng-show = "loading"> 
+        <img src="loader.gif"/>
+</div>
+
+<div style="width:90%; margin-left: auto; margin-right: auto;" ng-hide = "loading">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-info btn-lg" ng-click="EditFinished()">Finalize Schedule</button>
+            </div>
+        </div>
+        <div class="row" ng-show="edit">
+            <div class="panel-group col-sm-12" style="table-layout: fixed;">
+                <div class="panel panel-primary">
+                <div class="panel-heading"><h4>{{sched[0].schedule_date}} {{sched[0].workbook}} {{sched[0].week_of}} </h4></div>
+                <div class="panel-body">
+                    <label>Pagbabasa ng Bibliya: </label>
+                    {{sched[0].Bible_Reader}}  <span><a><i class="fa fa-exclamation-circle" ng-click="brshow()"></i></a></span>
+                    <input type="text" ng-show="brsub" ng-model="sched[0].brsub">
+                    <br><br>
+                    <label>Maging Mahusay sa Ministeryo </label>
+                    <table class="table table-striped table-hover col-sm-12">
+                        <thead ng-if="sched[0].Main_Hall == 'Ok'">
+                            <tr>
+                                <th class="col-sm-4">Main Hall</th>
+                                <th class="col-sm-4">Student</th>
+                                <th class="col-sm-1">Lesson</th>
+                                <th class="col-sm-3">Assistant</th>
+                            </tr>
+                        </thead>
+                        <tbody ng-if="sched[0].Main_Hall == 'Ok'">
+                            <tr>
+                                <td>{{sched[0].MAssign1.assignment}}</td>
+                                <td>
+                                    {{sched[0].MAssign1.student}} <span><a><i class="fa fa-exclamation-circle" ng-click="show1()"></i></a></span>
+                                    <input type="text" ng-show="sub1" ng-model="sched[0].sub1">
+                                </td>
+                                <td>{{sched[0].MAssign1.lesson}}</td>
+                                <td>{{sched[0].MAssign1.assistant}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{sched[0].MAssign2.assignment}}</td>
+                                <td>
+                                    {{sched[0].MAssign2.student}} <span><a><i class="fa fa-exclamation-circle" ng-click="show2()"></i></a></span>
+                                    <input type="text" ng-show="sub2" ng-model="sched[0].sub2">
+                                </td>
+                                <td>{{sched[0].MAssign2.lesson}}</td>
+                                <td>{{sched[0].MAssign2.assistant}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{sched[0].MAssign3.assignment}}</td>
+                                <td>
+                                    {{sched[0].MAssign3.student}} <span><a><i class="fa fa-exclamation-circle" ng-click="show3()"></i></a></span>
+                                    <input type="text" ng-show="sub3" ng-model="sched[0].sub3">
+                                </td>
+                                <td>{{sched[0].MAssign3.lesson}}</td>
+                                <td>{{sched[0].MAssign3.assistant}}</td>
+                            </tr>
+                        </tbody>
+                        <thead ng-if="sched[0].Second_Hall == 'Ok'">
+                            <tr>
+                                <th>Second Hall</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody ng-if="sched[0].Second_Hall == 'Ok'">
+                            <tr>
+                                <td>{{sched[0].SAssign1.assignment}}</td>
+                                <td>
+                                    {{sched[0].SAssign1.student}} <span><a><i class="fa fa-exclamation-circle" ng-click="show4()"></i></a></span>
+                                    <input type="text" ng-show="sub4" ng-model="sched[0].sub4">
+                                </td>
+                                <td>{{sched[0].SAssign1.lesson}}</td>
+                                <td>{{sched[0].SAssign1.assistant}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{sched[0].SAssign2.assignment}}</td>
+                                <td>
+                                    {{sched[0].SMAssign2.student}} <span><a><i class="fa fa-exclamation-circle" ng-click="show5()"></i></a></span>
+                                    <input type="text" ng-show="sub5" ng-model="sched[0].sub5">
+                                </td>
+                                <td>{{sched[0].SAssign2.lesson}}</td>
+                                <td>{{sched[0].SAssign2.assistant}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{sched[0].SAssign3.assignment}}</td>
+                                <td>
+                                    {{sched[0].SAssign3.student}} <span><a><i class="fa fa-exclamation-circle" ng-click="show6()"></i></a></span>
+                                    <input type="text" ng-show="sub6" ng-model="sched[0].sub6">
+                                </td>
+                                <td>{{sched[0].SAssign3.lesson}}</td>
+                                <td>{{sched[0].SAssign3.assistant}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <br>
+                    <button type="button" class="btn btn-success btn-sm" ng-click="Save()">Save</button>		      
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <br>
+
+    <div class="container">
+        <div class="row" ng-repeat="scd in sched" ng-if="scd.Done == 'No'">
+            <div class="panel-group col-sm-12" style="table-layout: fixed;">
+                <div class="panel panel-primary">
+                <div class="panel-heading"><h4>{{scd.schedule_date}} {{scd.workbook}} {{scd.week_of}} </h4></div>
+                <div class="panel-body">
+                    <label>Pagbabasa ng Bibliya: </label>
+                    {{scd.Bible_Reader}}  
+                    <br><br>
+                    <label>Maging Mahusay sa Ministeryo </label>
+                    <table class="table table-striped table-hover col-sm-12">
+                        <thead ng-if="scd.Main_Hall == 'Ok'">
+                            <tr>
+                                <th class="col-sm-4">Main Hall</th>
+                                <th class="col-sm-4">Student</th>
+                                <th class="col-sm-1">Lesson</th>
+                                <th class="col-sm-3">Assistant</th>
+                            </tr>
+                        </thead>
+                        <tbody ng-if="scd.Main_Hall == 'Ok'">
+                            <tr>
+                                <td>{{scd.MAssign1.assignment}}</td>
+                                <td>
+                                    {{scd.MAssign1.student}} 
+                                </td>
+                                <td>{{scd.MAssign1.lesson}}</td>
+                                <td>{{scd.MAssign1.assistant}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{scd.MAssign2.assignment}}</td>
+                                <td>
+                                    {{scd.MAssign2.student}} 
+                                </td>
+                                <td>{{scd.MAssign2.lesson}}</td>
+                                <td>{{scd.MAssign2.assistant}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{scd.MAssign3.assignment}}</td>
+                                <td>
+                                    {{scd.MAssign3.student}} 
+                                </td>
+                                <td>{{scd.MAssign3.lesson}}</td>
+                                <td>{{scd.MAssign3.assistant}}</td>
+                            </tr>
+                        </tbody>
+                        <thead ng-if="scd.Second_Hall == 'Ok'">
+                            <tr>
+                                <th>Second Hall</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody ng-if="scd.Second_Hall == 'Ok'">
+                            <tr>
+                                <td>{{scd.SAssign1.assignment}}</td>
+                                <td>
+                                    {{scd.SAssign1.student}} 
+                                </td>
+                                <td>{{scd.SAssign1.lesson}}</td>
+                                <td>{{scd.SAssign1.assistant}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{scd.SAssign2.assignment}}</td>
+                                <td>
+                                    {{scd.SMAssign2.student}} 
+                                </td>
+                                <td>{{scd.SAssign2.lesson}}</td>
+                                <td>{{scd.SAssign2.assistant}}</td>
+                            </tr>
+                            <tr>
+                                <td>{{scd.SAssign3.assignment}}</td>
+                                <td>
+                                    {{scd.SAssign3.student}} 
+                                </td>
+                                <td>{{scd.SAssign3.lesson}}</td>
+                                <td>{{scd.SAssign3.assistant}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,5 @@
+{
+    "connectionString": "mongodb://localhost/gvam",
+    "apiUrl":  "http://localhost:3000/api",
+    "secret": "Saas Team Secret"
+}

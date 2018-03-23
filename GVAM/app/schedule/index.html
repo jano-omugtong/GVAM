@@ -1,0 +1,636 @@
+<div style = "text-align:center" class = "spinner" ng-show = "loading"> 
+        <img src="loader.gif"/>
+</div>
+
+<div class="flash-message" ng-if="flash.show" ng-show="showMainFlash && !changePasswordModal">
+    <div class="{{'alert alert-' + flash.type}}">
+        {{flash.message}}
+        <a href="" ng-click="flash.show = !flash.show"><span class="glyphicon glyphicon-remove pull-right"></span></a> 
+    </div>
+</div>
+<div>
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+                
+            <!-- Modal content-->
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{type == 'add' ? 'Add Schedule' : 'Update Schedule'}}</h4>
+            </div>
+            <div class="modal-body">
+                <div ng-show="showAddFlash" class="{{'alert alert-' + flash.type}}">
+                    {{flash.message}}
+                </div>
+                <form>
+					<div ng-repeat = "field in fields">
+                        <label for = "{{field.name}}"> {{field.name}} </label>
+                        <span style = "color:red" ng-if="field.required">*</span>
+						<!--<input type = "{{field.type}}" id = "{{field.name}}" ng-model = "newSchedule[field.name]" class = "form-control" ng-readOnly = "type != 'add' && (readOnly || field.name == 'Schedule_tag')" required="{{field.required}}"><br>-->
+                        <!--<div ng-show="showCheckBox(field.type) && type != 'add'" ng-repeat="options in newSchedule[field.name] track by $index" style="float:left">
+                              {{options}}.&nbsp;
+                        </div><br ng-show="showCheckBox(field.type) && !readOnly"><br ng-show="showCheckBox(field.type) && readOnly">-->
+                        <!--<p ng-show="showRadio(field.type) && type != 'add' && readOnly" ng-model="newSchedule[field.name]">{{newSchedule[field.name]}}</p>-->
+                        <p ng-show="showDate(field.type) && type != 'add' && readOnly" ng-model="newSchedule[field.name]">{{newSchedule[field.name]}}</p>
+
+                        <!--show textbox-->
+                        <input data="{{field.type}}" type="text" ng-show="showTextBox(field.type)" ng-model="newSchedule[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control" ng-required=field.required>
+
+                        <!-- show email -->
+                        <input name="{{field.type}}" data="{{field.type}}" type="email" ng-show="showEmail(field.type)" ng-model="newSchedule[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control" ng-required=field.required>
+
+                        <!-- show number -->
+                        <input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="showNumber(field.type)" ng-model="newSchedule[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control" ng-required=field.required>
+
+                        <!-- show password -->
+                        <input name="{{field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="newSchedule[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control" ng-required=field.required>
+
+                        <!-- show confirm password -->
+                        <label ng-show="showPassword(field.type)" for=field.name>Confirm {{field.name}}: </label>
+                        <input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="confirmPassword[field.name]" class="form-control" ng-readonly="type != 'add' && (readOnly || field.name == 'schedule_date')">
+
+                        <!-- show text area -->
+                        <textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="newSchedule[field.name]" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
+
+                        <!-- show checkbox -->
+                        <div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type) && !(type != 'add' && (field.name == 'schedule_date'))">
+                            <input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" ng-checked="isChecked(field.name, option, field.type)" data="{{option}}" ng-disabled="readOnly && type!='add'" ng-click="pushToASchedule(field.name, option)">{{option}}<br>
+                        </div>
+
+                        <!-- show radio -->
+                        <div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type) && !(type != 'add' && (field.name == 'schedule_date'))">
+                            <input class="{{option}}" type="radio" name="options" ng-model="radioSelected" ng-change="putToModel(option, field.name)" ng-disabled="readOnly && type!='add'" ng-hide = "" value="{{option}}" ng-checked="isRadioSelected(field.name, option, field.type)">{{option}}<br>
+                        </div>
+
+                        <!-- show date -->
+                        <input data="{{field.type}}" type="date" ng-show="(showDate(field.type) && type == 'add') || (type != 'add' && readOnly == false && showDate(field.type))" ng-model="tempDate" ng-change="pushDateToASchedule(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-required=field.required>
+
+                        <!-- show dropdown -->
+                        <select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule[field.name]" ng-required="field.required">
+                            <option value="" ng-if="!field.required"></option>
+                            <!-- <option value="" ng-if="field.required" selected hidden></option> -->
+                            <option ng-repeat="option in field.options" ng-if="field.name != 'rotation_id'">{{option}}</option>
+                            <option ng-repeat="bibleReader in vm.user | filter: {gender: 'M'} track by $index" ng-if="field.name =='Bible Reader'">{{bibleReader.username}}</option>
+                            <option ng-repeat="rotation in rotations" ng-if="field.name =='rotation_id'">{{rotation.rotation_id}}</option>
+                        </select>
+
+                        <!-- show 1st Hall Assignments -->
+                        <div class="row" ng-show="field.name == 'Main_Hall'">
+                            <div class="col-xs-3">
+                                <label>1st Assignment </label>
+                                <select name="1stAssignment" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign1.assignment" class="form-control">
+                                    <option value="video" >Video</option>
+                                    <option value="initialCall" >Initial Call</option>
+                                    <option value="1stRV" >1st Return Visit</option>
+                                    <option value="2ndRV" >2nd Return Visit</option>
+                                    <option value="3rdRV" >3rd Return Visit</option>
+                                    <option value="BS" >Bible Study</option>
+                                    <option value="talk" >Talk</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-4">
+                                <label>1st Student </label>
+                                <select name="1stStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign1.student" class="form-control">
+                                    <option ng-if="student[srchM1] == srchM1_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>Lesson </label>
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.MAssign1.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                            </div>
+                            <div class="col-xs-3">
+                                <label>Assistant </label>
+                                <select name="1stStudentAsst" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign1.assistant" class="form-control">
+                                    <option ng-if="student[srchMA1] == srchMA1_1 && newSchedule.MAssign1.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="field.name == 'Main_Hall'">
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchM1">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchM1_1">
+                                    <option ng-if="srchM1 == 'gender'">M</option>
+                                    <option ng-if="srchM1 == 'gender'">F</option>
+                                    <option ng-if="srchM1 == 'civil status'">Youth</option>
+                                    <option ng-if="srchM1 == 'civil status'">Married</option>
+                                    <option ng-if="srchM1 == 'civil status'">Senior</option>
+                                    <option ng-if="srchM1 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchM1 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchM1 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchM1 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchM1 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchM1 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchMA1">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchMA1_1">
+                                    <option ng-if="srchMA1 == 'gender'">M</option>
+                                    <option ng-if="srchMA1 == 'gender'">F</option>
+                                    <option ng-if="srchMA1 == 'civil status'">Youth</option>
+                                    <option ng-if="srchMA1 == 'civil status'">Married</option>
+                                    <option ng-if="srchMA1 == 'civil status'">Senior</option>
+                                    <option ng-if="srchMA1 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchMA1 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchMA1 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchMA1 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchMA1 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchMA1 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="field.name == 'Main_Hall'">
+                            <div class="col-xs-3">
+                                <label>2nd Assignment </label>
+                                <select name="2ndAssignment" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign2.assignment" class="form-control">
+                                    <option value="video" >Video</option>
+                                    <option value="initialCall" >Initial Call</option>
+                                    <option value="1stRV" >1st Return Visit</option>
+                                    <option value="2ndRV" >2nd Return Visit</option>
+                                    <option value="3rdRV" >3rd Return Visit</option>
+                                    <option value="BS" >Bible Study</option>
+                                    <option value="talk" >Talk</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-4">
+                                <label>2nd Student </label>
+                                <select name="2ndStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign2.student" class="form-control">
+                                    <option ng-if="student[srchM2] == srchM2_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>Lesson </label>
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.MAssign2.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                            </div>
+                            <div class="col-xs-3">    
+                                <label>Assistant </label>
+                                <select name="2ndStudentAsst" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign2.assistant" class="form-control">
+                                    <option ng-if="student[srchMA2] == srchMA2_1 && newSchedule.MAssign2.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="field.name == 'Main_Hall'">
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchM2">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchM2_1">
+                                    <option ng-if="srchM2 == 'gender'">M</option>
+                                    <option ng-if="srchM2 == 'gender'">F</option>
+                                    <option ng-if="srchM2 == 'civil status'">Youth</option>
+                                    <option ng-if="srchM2 == 'civil status'">Married</option>
+                                    <option ng-if="srchM2 == 'civil status'">Senior</option>
+                                    <option ng-if="srchM2 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchM2 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchM2 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchM2 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchM2 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchM2 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchMA2">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchMA2_1">
+                                    <option ng-if="srchMA2 == 'gender'">M</option>
+                                    <option ng-if="srchMA2 == 'gender'">F</option>
+                                    <option ng-if="srchMA2 == 'civil status'">Youth</option>
+                                    <option ng-if="srchMA2 == 'civil status'">Married</option>
+                                    <option ng-if="srchMA2 == 'civil status'">Senior</option>
+                                    <option ng-if="srchMA2 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchMA2 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchMA2 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchMA2 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchMA2 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchMA2 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="field.name == 'Main_Hall'">
+                            <div class="col-xs-3">
+                                <label>3rd Assignment </label>
+                                <select name="3rdAssignment" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign3.assignment" class="form-control">
+                                    <option value="video" >Video</option>
+                                    <option value="initialCall" >Initial Call</option>
+                                    <option value="1stRV" >1st Return Visit</option>
+                                    <option value="2ndRV" >2nd Return Visit</option>
+                                    <option value="3rdRV" >3rd Return Visit</option>
+                                    <option value="BS" >Bible Study</option>
+                                    <option value="talk" >Talk</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-4">
+                                <label>3rd Student </label>
+                                <select name="3rdStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign3.student" class="form-control">
+                                    <option ng-if="student[srchM3] == srchM3_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>Lesson </label>
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.MAssign3.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                            </div>
+                            <div class="col-xs-3">
+                                <label>Assistant </label>
+                                <select name="2ndStudentAsst" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign3.assistant" class="form-control">
+                                    <option ng-if="student[srchMA3] == srchMA3_1 && newSchedule.MAssign3.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="field.name == 'Main_Hall'">
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchM3">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchM3_1">
+                                    <option ng-if="srchM3 == 'gender'">M</option>
+                                    <option ng-if="srchM3 == 'gender'">F</option>
+                                    <option ng-if="srchM3 == 'civil status'">Youth</option>
+                                    <option ng-if="srchM3 == 'civil status'">Married</option>
+                                    <option ng-if="srchM3 == 'civil status'">Senior</option>
+                                    <option ng-if="srchM3 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchM3 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchM3 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchM3 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchM3 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchM3 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchMA3">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchMA3_1">
+                                    <option ng-if="srchMA3 == 'gender'">M</option>
+                                    <option ng-if="srchMA3 == 'gender'">F</option>
+                                    <option ng-if="srchMA3 == 'civil status'">Youth</option>
+                                    <option ng-if="srchMA3 == 'civil status'">Married</option>
+                                    <option ng-if="srchMA3 == 'civil status'">Senior</option>
+                                    <option ng-if="srchMA3 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchMA3 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchMA3 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchMA3 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchMA3 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchMA3 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                    <!-- show 2nd Hall Assignments -->
+                        <div class="row" ng-show="field.name == 'Second_Hall'">
+                            <div class="col-xs-3">
+                                <label>1st Assignment </label>
+                                <select name="1stAssignment" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign1.assignment" class="form-control">
+                                    <option value="video" >Video</option>
+                                    <option value="initialCall" >Initial Call</option>
+                                    <option value="1stRV" >1st Return Visit</option>
+                                    <option value="2ndRV" >2nd Return Visit</option>
+                                    <option value="3rdRV" >3rd Return Visit</option>
+                                    <option value="BS" >Bible Study</option>
+                                    <option value="talk" >Talk</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-4">
+                                <label>1st Student </label>
+                                <select name="1stStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign1.student" class="form-control">
+                                    <option ng-if="student[srchS1] == srchS1_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>Lesson </label>
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.SAssign1.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                            </div>
+                            <div class="col-xs-3">
+                                <label>Assistant </label>
+                                <select name="1stStudentAsst" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign1.assistant" class="form-control">
+                                    <option ng-if="student[srchSA1] == srchSA1_1 && newSchedule.SAssign1.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="field.name == 'Second_Hall'">
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchS1">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchS1_1">
+                                    <option ng-if="srchS1 == 'gender'">M</option>
+                                    <option ng-if="srchS1 == 'gender'">F</option>
+                                    <option ng-if="srchS1 == 'civil status'">Youth</option>
+                                    <option ng-if="srchS1 == 'civil status'">Married</option>
+                                    <option ng-if="srchS1 == 'civil status'">Senior</option>
+                                    <option ng-if="srchS1 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchS1 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchS1 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchS1 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchS1 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchS1 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchSA1">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchSA1_1">
+                                    <option ng-if="srchSA1 == 'gender'">M</option>
+                                    <option ng-if="srchSA1 == 'gender'">F</option>
+                                    <option ng-if="srchSA1 == 'civil status'">Youth</option>
+                                    <option ng-if="srchSA1 == 'civil status'">Married</option>
+                                    <option ng-if="srchSA1 == 'civil status'">Senior</option>
+                                    <option ng-if="srchSA1 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchSA1 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchSA1 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchSA1 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchSA1 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchSA1 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- show 2nd Hall Assignments -->
+                        <div class="row" ng-show="field.name == 'Second_Hall'">
+                            <div class="col-xs-3">
+                                <label>2nd Assignment </label>
+                                <select name="2ndAssignment" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign2.assignment" class="form-control">
+                                    <option value="video" >Video</option>
+                                    <option value="initialCall" >Initial Call</option>
+                                    <option value="1stRV" >1st Return Visit</option>
+                                    <option value="2ndRV" >2nd Return Visit</option>
+                                    <option value="3rdRV" >3rd Return Visit</option>
+                                    <option value="BS" >Bible Study</option>
+                                    <option value="talk" >Talk</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-4">
+                                <label>2nd Student </label>
+                                <select name="2ndStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign2.student" class="form-control">
+                                    <option ng-if="student[srchS2] == srchS2_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>Lesson </label>
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.SAssign1.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                            </div>
+                            <div class="col-xs-3">
+                                <label>Assistant </label>
+                                <select name="2ndStudentAsst" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign1.assistant" class="form-control">
+                                    <option ng-if="student[srchSA2] == srchSA2_1 && newSchedule.SAssign2.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="field.name == 'Second_Hall'">
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchS2">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchS2_1">
+                                    <option ng-if="srchS2 == 'gender'">M</option>
+                                    <option ng-if="srchS2 == 'gender'">F</option>
+                                    <option ng-if="srchS2 == 'civil status'">Youth</option>
+                                    <option ng-if="srchS2 == 'civil status'">Married</option>
+                                    <option ng-if="srchS2 == 'civil status'">Senior</option>
+                                    <option ng-if="srchS2 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchS2 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchS2 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchS2 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchS2 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchS2 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchSA2">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchSA2_1">
+                                    <option ng-if="srchSA2 == 'gender'">M</option>
+                                    <option ng-if="srchSA2 == 'gender'">F</option>
+                                    <option ng-if="srchSA2 == 'civil status'">Youth</option>
+                                    <option ng-if="srchSA2 == 'civil status'">Married</option>
+                                    <option ng-if="srchSA2 == 'civil status'">Senior</option>
+                                    <option ng-if="srchSA2 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchSA2 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchSA2 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchSA2 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchSA2 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchSA2 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- show 2nd Hall Assignments -->
+                        <div class="row" ng-show="field.name == 'Second_Hall'">
+                            <div class="col-xs-3">
+                                <label>3rd Assignment </label>
+                                <select name="3rdAssignment" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign3.assignment" class="form-control">
+                                    <option value="video" >Video</option>
+                                    <option value="initialCall" >Initial Call</option>
+                                    <option value="1stRV" >1st Return Visit</option>
+                                    <option value="2ndRV" >2nd Return Visit</option>
+                                    <option value="3rdRV" >3rd Return Visit</option>
+                                    <option value="BS" >Bible Study</option>
+                                    <option value="talk" >Talk</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-4">
+                                <label>3rd Student </label>
+                                <select name="3rdStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign3.student" class="form-control">
+                                    <option ng-if="student[srchS3] == srchS3_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>Lesson </label>
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.SAssign3.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                            </div>
+                            <div class="col-xs-3">
+                                <label>Assistant </label>
+                                <select name="2ndStudentAsst" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign3.assistant" class="form-control">
+                                    <option ng-if="student[srchSA3] == srchSA3_1 && newSchedule.SAssign3.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="field.name == 'Second_Hall'">
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchS3">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchS3_1">
+                                    <option ng-if="srchS3 == 'gender'">M</option>
+                                    <option ng-if="srchS3 == 'gender'">F</option>
+                                    <option ng-if="srchS3 == 'civil status'">Youth</option>
+                                    <option ng-if="srchS3 == 'civil status'">Married</option>
+                                    <option ng-if="srchS3 == 'civil status'">Senior</option>
+                                    <option ng-if="srchS3 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchS3 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchS3 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchS3 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchS3 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchS3 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-3"></div>
+                            <div class="col-xs-3">
+                                <select class="form-control" ng-model="srchSA3">
+                                    <option value="">all</option>
+                                    <option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+                                </select>
+                                <select class="form-control" ng-model="srchSA3_1">
+                                    <option ng-if="srchSA3 == 'gender'">M</option>
+                                    <option ng-if="srchSA3 == 'gender'">F</option>
+                                    <option ng-if="srchSA3 == 'civil status'">Youth</option>
+                                    <option ng-if="srchSA3 == 'civil status'">Married</option>
+                                    <option ng-if="srchSA3 == 'civil status'">Senior</option>
+                                    <option ng-if="srchSA3 == 'service_status'">Publisher</option>
+                                    <option ng-if="srchSA3 == 'service_status'">Pioneer</option>
+                                    <option ng-if="srchSA3 == 'service_status'">Ex-Pioneer</option>
+                                    <option ng-if="srchSA3 == 'service_status'">Unbaptized</option>
+                                    <option ng-if="srchSA3 == 'priviledges'">Ministerial Servant</option>
+                                    <option ng-if="srchSA3 == 'priviledges'">Elder</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+					<small><i>Fields marked with an asterisk(<span style = "color:red">*</span>) are required.</i></small>
+                
+			</div>
+					<div class = "modal-footer">
+                     <button class="btn btn-primary" ng-click="addOrUpdateSchedule()" ng-if = "type == 'add'">Add</button>
+                    <button class="btn btn-primary" ng-click="addOrUpdateSchedule()" ng-if = "type != 'add' && readOnly">Edit</button>
+                    <button class="btn btn-primary" ng-if = "rotation == true" >True</button>
+					<button class="btn btn-primary" ng-if = "type != 'add' && !readOnly" ng-click="saveUpdate()">Save</button>
+                    <button type="button" class="btn btn-danger" ng-click="restart()" data-dismiss="modal">Close</button>
+					</div>
+                </form>
+           
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reportFilterModal" role="dialog">
+        <div class="modal-dialog">
+                
+            <!-- Modal content-->
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Customize Report Fields</h4>
+            </div>
+            <div class="modal-body">
+                Select the columns you want to display in the report
+                <form>
+					<select ng-model="reportColumns" class="form-control" multiple>
+                        <option ng-repeat="field in fields">{{field.name}}</option>
+                    </select>
+                </form>
+                <br>
+                <small>*Not selecting anything will consider all fields</small>  <br>
+                <small>*Hold <b>Ctrl</b> key when selecting multiple items</small>  <br>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" ng-csv="getFilteredSchedule()" csv-header="getColumns()" csv-column-order="getColumns()" filename="{{setFilename()}}.csv" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-download-alt"></span> Download
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+  
+    <div class="row" ng-hide = "loading">
+        <div class="col-sm-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">Schedule</div>
+                <div class="panel-body">
+                    <div class="form-inline">    
+                        <button type="addButton" class="btn btn-info" ng-click="resetModal(); declareSelected()" data-toggle="modal" data-target="#myModal">
+                        <span class="glyphicon glyphicon-plus"></span> New
+                        </button>
+                        <button type="reportButton" class="btn btn-success" data-toggle="modal" data-target="#reportFilterModal" ng-click="resetReportColumns()">
+                            Generate Report
+                        </button>
+                    </div>                           
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Filter</div>
+                    <div class="panel-body">
+                        <div class="form-inline">
+                            <select class="form-control" ng-model="searchColumn" ng-change="search = {}">
+                                <option value="">all</option>
+                                <option ng-repeat="field in fields">{{field.name}}</option>
+                            </select>
+                            <input type ng-model="search[(searchColumn != '') ? searchColumn : '$']" class="form-control" placeholder="Search {{searchColumn}} here..."/>     
+                            
+                            <div class="input-group">
+                                <input type="text" class="form-control" uib-datepicker-popup ng-model="searchDate" is-open="opened" placeholder="YYYY-MM-DD" close-text="Close"/>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" ng-click="opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </div>
+
+                            <label for="pageSize">Items per page: </label>
+                            <input id="pageSize" type="number" ng-model="pageSize" class="form-control" min="1" max="{{filtered_schedule.length}}" />
+                        </div>                            
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="row" ng-hide = "loading">
+        <div class="col-sm-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>  
+                        <th ng-click='setTo(schedule_date)' ng-class="sortClass(schedule_date)">Schedule Date</th>
+                        <th ng-click='setTo(week_of)' ng-class="sortClass(week_of)">Week Of</th>
+                        <th ng-click='setTo(workbook)' ng-class="sortClass(workbook)">Workbook</th>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                        <td ng-repeat="field in fields">
+                            <input type="text" class="form-control" ng-model="search[field.name]"/>
+                        </td>
+                    </tr> -->
+                    <tr ng-repeat="schedule in filtered_schedule | pagination: (currentPage - 1) * pageSize | limitTo: pageSize">
+                        <td ng-repeat="field in fields" ng-show="field.name == 'schedule_date' || field.name == 'week_of' || field.name == 'workbook'" class="cutOverflow">{{(!$parent.schedule[field.name]) ? ($parent.schedule[field.name] = '') : $parent.schedule[field.name]}}</td>
+                        <td>
+                            <a><i class="fa fa-list-alt" aria-hidden="true" ng-click="editModal(schedule); declareSelected()" data-toggle="modal" data-target="#myModal" data-toggle="tooltip" title="View Details"></i><a>
+                            |
+                            <a><i class="fa fa-trash" aria-hidden="true" ng-click="deleteSchedule(schedule)" data-toggle="tooltip" title="Delete"></i></a>                           
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul uib-pagination total-items="filtered_schedule.length" ng-model="currentPage" items-per-page="pageSize" boundary-links="true" max-size="3" force-ellipses="true"></ul>
+        </div>
+    </div>
+</div>
