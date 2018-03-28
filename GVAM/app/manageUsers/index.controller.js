@@ -101,7 +101,7 @@
 
         // Table sort functions
         // column to sort
-        $scope.column = 'role';
+        $scope.column = 'username';
 
         // sort ordering (Ascending or Descending). Set true for desending
         $scope.reverse = false; 
@@ -638,10 +638,6 @@
         */
         $scope.addUser = function(){
             
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            for (var i = 0; i < 10; i++){
-                $scope.aUsers.password += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
             $scope.showAddFlash = true;
 
             var requiredTextField=0;

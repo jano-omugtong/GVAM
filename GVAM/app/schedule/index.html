@@ -69,28 +69,40 @@
                             <option value="" ng-if="!field.required"></option>
                             <!-- <option value="" ng-if="field.required" selected hidden></option> -->
                             <option ng-repeat="option in field.options" ng-if="field.name != 'rotation_id'">{{option}}</option>
-                            <option ng-repeat="bibleReader in vm.user | filter: {gender: 'M'} track by $index" ng-if="field.name =='Bible Reader'">{{bibleReader.username}}</option>
                             <option ng-repeat="rotation in rotations" ng-if="field.name =='rotation_id'">{{rotation.rotation_id}}</option>
                         </select>
 
                         <!-- show 1st Hall Assignments -->
                         <div class="row" ng-show="field.name == 'Main_Hall'">
+                            <div class="col-xs-4">
+                                <label>Bible Reader </label>
+                                <select name="1stBReader" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.BReader1.student" class="form-control">
+                                    <option ng-if="student.gender == 'M' && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>Lesson </label>
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.Breader1.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="field.name == 'Main_Hall'">
                             <div class="col-xs-3">
                                 <label>1st Assignment </label>
                                 <select name="1stAssignment" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign1.assignment" class="form-control">
-                                    <option value="video" >Video</option>
-                                    <option value="initialCall" >Initial Call</option>
-                                    <option value="1stRV" >1st Return Visit</option>
-                                    <option value="2ndRV" >2nd Return Visit</option>
-                                    <option value="3rdRV" >3rd Return Visit</option>
-                                    <option value="BS" >Bible Study</option>
-                                    <option value="talk" >Talk</option>
+                                    <option  >Video</option>
+                                    <option  >Initial Call</option>
+                                    <option  >1st Return Visit</option>
+                                    <option  >2nd Return Visit</option>
+                                    <option  >3rd Return Visit</option>
+                                    <option  >Bible Study</option>
+                                    <option  >Talk</option>
                                 </select>
                             </div>
                             <div class="col-xs-4">
                                 <label>1st Student </label>
                                 <select name="1stStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign1.student" class="form-control">
-                                    <option ng-if="student[srchM1] == srchM1_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                    <option ng-if="student[srchM1] == srchM1_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
                                 </select>
                             </div>
                             <div class="col-xs-2">
@@ -123,6 +135,12 @@
                                     <option ng-if="srchM1 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchM1 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchM1 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchM1 == 'group_no'">1</option>
+                                    <option ng-if="srchM1 == 'group_no'">2</option>
+                                    <option ng-if="srchM1 == 'group_no'">3</option>
+                                    <option ng-if="srchM1 == 'group_no'">4</option>
+                                    <option ng-if="srchM1 == 'group_no'">5</option>
+                                    <option ng-if="srchM1 == 'group_no'">6</option>
                                 </select>
                             </div>
                             <div class="col-xs-3"></div>
@@ -143,6 +161,12 @@
                                     <option ng-if="srchMA1 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchMA1 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchMA1 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchMA1 == 'group_no'">1</option>
+                                    <option ng-if="srchMA1 == 'group_no'">2</option>
+                                    <option ng-if="srchMA1 == 'group_no'">3</option>
+                                    <option ng-if="srchMA1 == 'group_no'">4</option>
+                                    <option ng-if="srchMA1 == 'group_no'">5</option>
+                                    <option ng-if="srchMA1 == 'group_no'">6</option>
                                 </select>
                             </div>
                         </div>
@@ -163,7 +187,7 @@
                             <div class="col-xs-4">
                                 <label>2nd Student </label>
                                 <select name="2ndStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign2.student" class="form-control">
-                                    <option ng-if="student[srchM2] == srchM2_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                    <option ng-if="student[srchM2] == srchM2_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
                                 </select>
                             </div>
                             <div class="col-xs-2">
@@ -196,6 +220,12 @@
                                     <option ng-if="srchM2 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchM2 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchM2 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchM2 == 'group_no'">1</option>
+                                    <option ng-if="srchM2 == 'group_no'">2</option>
+                                    <option ng-if="srchM2 == 'group_no'">3</option>
+                                    <option ng-if="srchM2 == 'group_no'">4</option>
+                                    <option ng-if="srchM2 == 'group_no'">5</option>
+                                    <option ng-if="srchM2 == 'group_no'">6</option>
                                 </select>
                             </div>
                             <div class="col-xs-3"></div>
@@ -216,6 +246,12 @@
                                     <option ng-if="srchMA2 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchMA2 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchMA2 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchMA2 == 'group_no'">1</option>
+                                    <option ng-if="srchMA2 == 'group_no'">2</option>
+                                    <option ng-if="srchMA2 == 'group_no'">3</option>
+                                    <option ng-if="srchMA2 == 'group_no'">4</option>
+                                    <option ng-if="srchMA2 == 'group_no'">5</option>
+                                    <option ng-if="srchMA2 == 'group_no'">6</option>
                                 </select>
                             </div>
                         </div>
@@ -236,7 +272,7 @@
                             <div class="col-xs-4">
                                 <label>3rd Student </label>
                                 <select name="3rdStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.MAssign3.student" class="form-control">
-                                    <option ng-if="student[srchM3] == srchM3_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                    <option ng-if="student[srchM3] == srchM3_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
                                 </select>
                             </div>
                             <div class="col-xs-2">
@@ -269,6 +305,12 @@
                                     <option ng-if="srchM3 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchM3 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchM3 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchM3 == 'group_no'">1</option>
+                                    <option ng-if="srchM3 == 'group_no'">2</option>
+                                    <option ng-if="srchM3 == 'group_no'">3</option>
+                                    <option ng-if="srchM3 == 'group_no'">4</option>
+                                    <option ng-if="srchM3 == 'group_no'">5</option>
+                                    <option ng-if="srchM3 == 'group_no'">6</option>
                                 </select>
                             </div>
                             <div class="col-xs-3"></div>
@@ -289,11 +331,30 @@
                                     <option ng-if="srchMA3 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchMA3 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchMA3 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchMA3 == 'group_no'">1</option>
+                                    <option ng-if="srchMA3 == 'group_no'">2</option>
+                                    <option ng-if="srchMA3 == 'group_no'">3</option>
+                                    <option ng-if="srchMA3 == 'group_no'">4</option>
+                                    <option ng-if="srchMA3 == 'group_no'">5</option>
+                                    <option ng-if="srchMA3 == 'group_no'">6</option>
                                 </select>
                             </div>
                         </div>
                     
                     <!-- show 2nd Hall Assignments -->
+                        <div class="row" ng-show="field.name == 'Second_Hall'">
+                            <div class="col-xs-4">
+                                <label>Bible Reader </label>
+                                <select name="2ndBReader" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.BReader2.student" class="form-control">
+                                    <option ng-if="student.gender == 'M' && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-2">
+                                <label>Lesson </label>
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.Breader2.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                            </div>
+                        </div>
+
                         <div class="row" ng-show="field.name == 'Second_Hall'">
                             <div class="col-xs-3">
                                 <label>1st Assignment </label>
@@ -310,7 +371,7 @@
                             <div class="col-xs-4">
                                 <label>1st Student </label>
                                 <select name="1stStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign1.student" class="form-control">
-                                    <option ng-if="student[srchS1] == srchS1_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                    <option ng-if="student[srchS1] == srchS1_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
                                 </select>
                             </div>
                             <div class="col-xs-2">
@@ -343,6 +404,12 @@
                                     <option ng-if="srchS1 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchS1 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchS1 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchS1 == 'group_no'">1</option>
+                                    <option ng-if="srchS1 == 'group_no'">2</option>
+                                    <option ng-if="srchS1 == 'group_no'">3</option>
+                                    <option ng-if="srchS1 == 'group_no'">4</option>
+                                    <option ng-if="srchS1 == 'group_no'">5</option>
+                                    <option ng-if="srchS1 == 'group_no'">6</option>
                                 </select>
                             </div>
                             <div class="col-xs-3"></div>
@@ -363,6 +430,12 @@
                                     <option ng-if="srchSA1 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchSA1 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchSA1 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchSA1 == 'group_no'">1</option>
+                                    <option ng-if="srchSA1 == 'group_no'">2</option>
+                                    <option ng-if="srchSA1 == 'group_no'">3</option>
+                                    <option ng-if="srchSA1 == 'group_no'">4</option>
+                                    <option ng-if="srchSA1 == 'group_no'">5</option>
+                                    <option ng-if="srchSA1 == 'group_no'">6</option>
                                 </select>
                             </div>
                         </div>
@@ -384,7 +457,7 @@
                             <div class="col-xs-4">
                                 <label>2nd Student </label>
                                 <select name="2ndStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign2.student" class="form-control">
-                                    <option ng-if="student[srchS2] == srchS2_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                    <option ng-if="student[srchS2] == srchS2_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
                                 </select>
                             </div>
                             <div class="col-xs-2">
@@ -417,6 +490,12 @@
                                     <option ng-if="srchS2 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchS2 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchS2 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchS2 == 'group_no'">1</option>
+                                    <option ng-if="srchS2 == 'group_no'">2</option>
+                                    <option ng-if="srchS2 == 'group_no'">3</option>
+                                    <option ng-if="srchS2 == 'group_no'">4</option>
+                                    <option ng-if="srchS2 == 'group_no'">5</option>
+                                    <option ng-if="srchS2 == 'group_no'">6</option>
                                 </select>
                             </div>
                             <div class="col-xs-3"></div>
@@ -437,6 +516,12 @@
                                     <option ng-if="srchSA2 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchSA2 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchSA2 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchSA2 == 'group_no'">1</option>
+                                    <option ng-if="srchSA2 == 'group_no'">2</option>
+                                    <option ng-if="srchSA2 == 'group_no'">3</option>
+                                    <option ng-if="srchSA2 == 'group_no'">4</option>
+                                    <option ng-if="srchSA2 == 'group_no'">5</option>
+                                    <option ng-if="srchSA2 == 'group_no'">6</option>
                                 </select>
                             </div>
                         </div>
@@ -458,7 +543,7 @@
                             <div class="col-xs-4">
                                 <label>3rd Student </label>
                                 <select name="3rdStudent" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign3.student" class="form-control">
-                                    <option ng-if="student[srchS3] == srchS3_1 && student.rotation_done == 'No'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+                                    <option ng-if="student[srchS3] == srchS3_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
                                 </select>
                             </div>
                             <div class="col-xs-2">
@@ -491,6 +576,12 @@
                                     <option ng-if="srchS3 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchS3 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchS3 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchS3 == 'group_no'">1</option>
+                                    <option ng-if="srchS3 == 'group_no'">2</option>
+                                    <option ng-if="srchS3 == 'group_no'">3</option>
+                                    <option ng-if="srchS3 == 'group_no'">4</option>
+                                    <option ng-if="srchS3 == 'group_no'">5</option>
+                                    <option ng-if="srchS3 == 'group_no'">6</option>
                                 </select>
                             </div>
                             <div class="col-xs-3"></div>
@@ -511,6 +602,12 @@
                                     <option ng-if="srchSA3 == 'service_status'">Unbaptized</option>
                                     <option ng-if="srchSA3 == 'priviledges'">Ministerial Servant</option>
                                     <option ng-if="srchSA3 == 'priviledges'">Elder</option>
+                                    <option ng-if="srchSA3 == 'group_no'">1</option>
+                                    <option ng-if="srchSA3 == 'group_no'">2</option>
+                                    <option ng-if="srchSA3 == 'group_no'">3</option>
+                                    <option ng-if="srchSA3 == 'group_no'">4</option>
+                                    <option ng-if="srchSA3 == 'group_no'">5</option>
+                                    <option ng-if="srchSA3 == 'group_no'">6</option>
                                 </select>
                             </div>
                         </div>

@@ -14,7 +14,7 @@
         .module('app')
         .controller('Home.IndexController', Controller);
  
-     function Controller($window, ScheduleService, $scope, $interval, $filter, socket, FlashService) {
+     function Controller($window, ScheduleService, $scope, $interval, $filter, socket, FlashService, UserService) {
  
         //initialization
         $scope.sched = [];
@@ -34,15 +34,25 @@
         };
 
         getAllSchedule();
+        getAllUsers();
 
         function getAllSchedule(){
             //get all Schedule
             ScheduleService.GetAll().then(function(schedule){
-                if(schedule.length > 0){               
+                if(schedule.length > 0){    
+                    var i = 0, j = 0;
+                        angular.forEach(schedule, function(value, key){
+                            angular.forEach(value, function(value2, key2){
+                                if (key2 == "Done"){
+                                    if (value2 == "No"){
+                                        $scope.sched[j++] = schedule[i];
+                                    }
+                                    i++;
+                                }
+                            });
+                        });
                     //store to array
-                    $scope.sched = schedule;
                     $scope.sched = $filter('orderBy')($scope.sched, 'schedule_date');
-                    console.log($scope.sched);
                 }
                 else{
                     //perform notification here
@@ -56,19 +66,207 @@
 			});
         }
 
+        var vm = this;
+        vm.user = [];
+        function getAllUsers() {
+            UserService.GetAll().then(function (user) {
+                $scope.allUsers = user;
+                $scope.userLength = Object.size(user);
+                for (var i = 0; i<$scope.userLength;i++){
+                    if (user[i].username != "admin")
+                        if (user[i].service_status != 'W/Restrictions')
+                            vm.user[i] = user[i];
+                }
+                vm.user = $filter('orderBy')(vm.user, 'username');
+            }).finally(function() {
+				$scope.loading = false;
+			});
+        }
+
         $scope.Save = function() {
-            console.log($scope.sched[0].Done);
             $scope.sched[0].Done = "Yes";
-            console.log($scope.sched[0].Done);
             ScheduleService.updateSchedule($scope.sched[0]).then(function(){
+                
+                for (var i = 0; i<(vm.user.length - 1);i++){
+                    if ($scope.sched[0].Main_Hall == 'Ok'){
+                        if(vm.user[i].username == $scope.sched[0].BReader1.student){
+                            if ($scope.sched[0].brsub1){
+                                if (!vm.user[i].assign_missed){
+                                    vm.user[i].assign_missed = 1;
+                                } else if (vm.user[i].assign_missed == 3){}
+                                else {
+                                    vm.user[i].assign_missed++;
+                                }
+                                UserService.Update(vm.user[i]);
+                            }
+                            else {
+                                if (!vm.user[i].lessons_done){
+                                    vm.user[i].lessons_done = $scope.sched[0].BReader1.lesson;
+                                } else {
+                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + $scope.sched[0].BReader1.lesson;
+                                }
+                                vm.user[i].assign_missed = 0;
+                                UserService.Update(vm.user[i]);
+                            }
+                        }
+                        if(vm.user[i].username == $scope.sched[0].MAssign1.student){
+                            if ($scope.sched[0].sub1){
+                                if (!vm.user[i].assign_missed){
+                                    vm.user[i].assign_missed = 1;
+                                } else {
+                                    vm.user[i].assign_missed++;
+                                }
+                                UserService.Update(vm.user[i]);
+                            }
+                            else {
+                                if (!vm.user[i].lessons_done){
+                                    vm.user[i].lessons_done = $scope.sched[0].MAssign1.lesson;
+                                } else {
+                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + $scope.sched[0].MAssign1.lesson;
+                                }
+                                vm.user[i].assign_missed = 0;
+                                UserService.Update(vm.user[i]);
+                            }
+                        }
+                        if(vm.user[i].username == $scope.sched[0].MAssign2.student){
+                            if ($scope.sched[0].sub2){
+                                if (!vm.user[i].assign_missed){
+                                    vm.user[i].assign_missed = 1;
+                                } else {
+                                    vm.user[i].assign_missed++;
+                                }
+                                UserService.Update(vm.user[i]);
+                            }
+                            else {
+                                if (!vm.user[i].lessons_done){
+                                    vm.user[i].lessons_done = $scope.sched[0].MAssign2.lesson;
+                                } else {
+                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + $scope.sched[0].MAssign2.lesson;
+                                }
+                                vm.user[i].assign_missed = 0;
+                                UserService.Update(vm.user[i]);
+                            }
+                        }
+                        if(vm.user[i].username == $scope.sched[0].MAssign3.student){
+                            if ($scope.sched[0].sub3){
+                                if (!vm.user[i].assign_missed){
+                                    vm.user[i].assign_missed = 1;
+                                } else {
+                                    vm.user[i].assign_missed++;
+                                }
+                                UserService.Update(vm.user[i]);
+                            }
+                            else {
+                                if (!vm.user[i].lessons_done){
+                                    vm.user[i].lessons_done = $scope.sched[0].MAssign3.lesson;
+                                } else {
+                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + $scope.sched[0].MAssign3.lesson;
+                                }
+                                vm.user[i].assign_missed = 0;
+                                UserService.Update(vm.user[i]);
+                            }
+                        }
+                    }
+                    if ($scope.sched[0].Second_Hall == 'Ok'){
+                        if(vm.user[i].username == $scope.sched[0].BReader2.student){
+                            if ($scope.sched[0].brsub2){
+                                if (!vm.user[i].assign_missed){
+                                    vm.user[i].assign_missed = 1;
+                                } else {
+                                    vm.user[i].assign_missed++;
+                                }
+                                UserService.Update(vm.user[i]);
+                            }
+                            else {
+                                if (!vm.user[i].lessons_done){
+                                    vm.user[i].lessons_done = $scope.sched[0].BReader2.lesson;
+                                } else {
+                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + $scope.sched[0].BReader2.lesson;
+                                }
+                                vm.user[i].assign_missed = 0;
+                                UserService.Update(vm.user[i]);
+                            }
+                        }
+                        if(vm.user[i].username == $scope.sched[0].SAssign1.student){
+                            if ($scope.sched[0].sub4){
+                                if (!vm.user[i].assign_missed){
+                                    vm.user[i].assign_missed = 1;
+                                } else {
+                                    vm.user[i].assign_missed++;
+                                }
+                                UserService.Update(vm.user[i]);
+                            }
+                            else {
+                                if (!vm.user[i].lessons_done){
+                                    vm.user[i].lessons_done = $scope.sched[0].SAssign1.lesson;
+                                } else {
+                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + $scope.sched[0].SAssign1.lesson;
+                                }
+                                vm.user[i].assign_missed = 0;
+                                UserService.Update(vm.user[i]);
+                            }
+                        }
+                        if(vm.user[i].username == $scope.sched[0].SAssign2.student){
+                            if ($scope.sched[0].sub5){
+                                if (!vm.user[i].assign_missed){
+                                    vm.user[i].assign_missed = 1;
+                                } else {
+                                    vm.user[i].assign_missed++;
+                                }
+                                UserService.Update(vm.user[i]);
+                            }
+                            else {
+                                if (!vm.user[i].lessons_done){
+                                    vm.user[i].lessons_done = $scope.sched[0].SAssign2.lesson;
+                                } else {
+                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + $scope.sched[0].SAssign2.lesson;
+                                }
+                                vm.user[i].assign_missed = 0;
+                                UserService.Update(vm.user[i]);
+                            }
+                        }
+                        if(vm.user[i].username == $scope.sched[0].SAssign6.student){
+                            if ($scope.sched[0].sub6){
+                                if (!vm.user[i].assign_missed){
+                                    vm.user[i].assign_missed = 1;
+                                } else {
+                                    vm.user[i].assign_missed++;
+                                }
+                                UserService.Update(vm.user[i]);
+                            }
+                            else {
+                                if (!vm.user[i].lessons_done){
+                                    vm.user[i].lessons_done = $scope.sched[0].SAssign3.lesson;
+                                } else {
+                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + $scope.sched[0].SAssign3.lesson;
+                                }
+                                vm.user[i].assign_missed = 0;
+                                UserService.Update(vm.user[i]);
+                            }
+                        }
+                    }
+                }
                 FlashService.Success('Schedule Finalized');
                 $scope.sched = [];
+                resetInputfields();
+                getAllSchedule();
                 socket.emit('scheduleChange');
                 
             })
             .catch(function(error){
                 FlashService.Error(error);
             });
+        }
+
+        function resetInputfields() {
+            $scope.brsub1 = false;
+            $scope.brsub2 = false;
+            $scope.sub1 = false;
+            $scope.sub2 = false;
+            $scope.sub3 = false;
+            $scope.sub4 = false;
+            $scope.sub5 = false;
+            $scope.sub6 = false;
         }
 
         $scope.edit = false;
@@ -79,7 +277,8 @@
                 $scope.edit = false;
         }
 
-        $scope.brsub = false;
+        $scope.brsub1 = false;
+        $scope.brsub2 = false;
         $scope.sub1 = false;
         $scope.sub2 = false;
         $scope.sub3 = false;
@@ -87,11 +286,17 @@
         $scope.sub5 = false;
         $scope.sub6 = false;
 
-        $scope.brshow = function(){
-            if (!$scope.brsub)
-                $scope.brsub = true;
+        $scope.brshow1 = function(){
+            if (!$scope.brsub1)
+                $scope.brsub1 = true;
             else
-                $scope.brsub = false;
+                $scope.brsub1 = false;
+        }
+        $scope.brshow2 = function(){
+            if (!$scope.brsub2)
+                $scope.brsub2 = true;
+            else
+                $scope.brsub2 = false;
         }
         $scope.show1 = function(){
             if (!$scope.sub1)

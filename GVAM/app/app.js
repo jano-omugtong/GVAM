@@ -197,7 +197,11 @@
             // get current user
             UserService.GetCurrent().then(function (user) {
                 var str = user._id;
+                $rootScope.lagot = false;
                 $rootScope.fName = user.firstName;
+                if (user.assign_missed > 2){
+                    $rootScope.lagot = true;
+                }
 
                 if (user.firstName == null){
                     $rootScope.initials = "new";

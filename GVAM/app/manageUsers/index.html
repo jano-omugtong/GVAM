@@ -236,17 +236,17 @@
 		<thread>
 			<tr>
 				<th ng-click='sortColumn("role")' ng-class='setWidth("role") + " " + sortClass("role")'>Role</th>
+				<th ng-click='sortColumn("username")' ng-class='setWidth("username") + " " + sortClass("username")'>Username</th>
 				<th ng-click='sortColumn("firstName")' ng-class='setWidth("firstName") + " " + sortClass("firstName")'>First Name</th>
 				<th ng-click='sortColumn("lastName")' ng-class='setWidth("lastName") + " " + sortClass("lastName")'>Last Name</th>
-				<th ng-click='sortColumn("username")' ng-class='setWidth("username") + " " + sortClass("username")'>Username</th>
 			</tr>
 		</thread>
 		<tbody>
-			<tr ng-repeat="u in vm.user | orderObjectBy : column : reverse | filter : search | pagination: (currentPage - 1) * pageSize | limitTo: pageSize ">
+			<tr ng-if="u.username != 'admin'" ng-repeat="u in vm.user | orderObjectBy : column : reverse | filter : search | pagination: (currentPage - 1) * pageSize | limitTo: pageSize ">
 				<td class="cutOverflow">{{u.role}}</td>
+				<td class="cutOverflow">{{u.username}}   <span ng-if="u.assign_missed >= 3"><i class="fa fa-exclamation-circle" ></i></span></td>
 				<td class="cutOverflow">{{u.firstName}}</td>
 				<td class="cutOverflow">{{u.lastName}}</td>
-				<td class="cutOverflow">{{u.username}}</td>
 				<td>
 					<a><i class="fa fa-list-alt" aria-hidden="true" data-toggle = "modal" data-target = "#editModal" ng-click="editUser(u._id); declareSelected()" data-toggle="tooltip" title="View Details"></i><a>
 					|

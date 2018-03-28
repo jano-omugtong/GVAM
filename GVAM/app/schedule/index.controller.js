@@ -55,7 +55,7 @@
         $scope.pageSize = 10;
 
         //sort variables
-        $scope.reverse = false;
+        $scope.reverse = true;
         $scope.sortColumn = "schedule_date";
 
         //filter/search variables
@@ -798,17 +798,149 @@
                         ScheduleService.addSchedule($scope.newSchedule).then(function(){
                         for (var i = 0; i<(vm.user.length - 1);i++){
                             angular.forEach($scope.newSchedule, function(value, key){
-                                if (key == "MAssign1"){
+                                if (value == "BReader1"){
                                     angular.forEach(value, function(value2, key2){
-                                        console.log(value2 + " : hi : " + key2);
                                         if (key2 == "student"){
                                             if(vm.user[i].username == value2){
                                                 vm.user[i].rotation_done = "Yes";
-                                                if (!vm.user[i].lessons_done){
-                                                    vm.user[i].lessons_done = value.lesson;
-                                                } else {
-                                                    vm.user[i].lessons_done = vm.user[i].lessons_done + ", " + value.lesson;
-                                                }
+                                                vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                    })
+                                }
+                                if (value == "MAssign1"){
+                                    angular.forEach(value, function(value2, key2){
+                                        if (key2 == "student"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].rotation_done = "Yes";
+                                                vm.user[i].last_assistant = value.assistant;
+                                                vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                        if (key2 == "assistant"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].assistant_sched = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                    })
+                                }
+                                if (key == "MAssign1"){
+                                    angular.forEach(value, function(value2, key2){
+                                        if (key2 == "student"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].rotation_done = "Yes";
+                                                vm.user[i].last_assistant = value.assistant;
+                                                vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                        if (key2 == "assistant"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].assistant_sched = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                    })
+                                }
+                            if (key == "MAssign2"){
+                                    angular.forEach(value, function(value2, key2){
+                                        if (key2 == "student"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].rotation_done = "Yes";
+                                                vm.user[i].last_assistant = value.assistant;
+                                                vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                        if (key2 == "assistant"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].assistant_sched = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                    })
+                                }
+                            if (key == "MAssign3"){
+                                    angular.forEach(value, function(value2, key2){
+                                        if (key2 == "student"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].rotation_done = "Yes";
+                                                vm.user[i].last_assistant = value.assistant;
+                                                vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                        if (key2 == "assistant"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].assistant_sched = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                    })
+                                }
+                            if (value == "BReader2"){
+                                    angular.forEach(value, function(value2, key2){
+                                        if (key2 == "student"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].rotation_done = "Yes";
+                                                vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                    })
+                                }
+                            if (key == "SAssign1"){
+                                    angular.forEach(value, function(value2, key2){
+                                        if (key2 == "student"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].rotation_done = "Yes";
+                                                vm.user[i].last_assistant = value.assistant;
+                                                vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                        if (key2 == "assistant"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].assistant_sched = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                    })
+                                }
+                            if (key == "SAssign2"){
+                                    angular.forEach(value, function(value2, key2){
+                                        if (key2 == "student"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].rotation_done = "Yes";
+                                                vm.user[i].last_assistant = value.assistant;
+                                                vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                        if (key2 == "assistant"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].assistant_sched = $scope.newSchedule.schedule_date;
+                                                UserService.Update(vm.user[i]);
+                                            }
+                                        }
+                                    })
+                                }
+                            if (key == "SAssign3"){
+                                    angular.forEach(value, function(value2, key2){
+                                        if (key2 == "student"){
+                                            if(vm.user[i].username == value2){
+                                                vm.user[i].rotation_done = "Yes";
                                                 vm.user[i].last_assistant = value.assistant;
                                                 vm.user[i].last_assign = vm.user[i].scheduled_assign;
                                                 vm.user[i].scheduled_assign = $scope.newSchedule.schedule_date;
@@ -824,7 +956,6 @@
                                     })
                                 }
                             })
-                            console.log(vm.user[i].username);
                             
                         }
                         //  get all schedule to refresh the table

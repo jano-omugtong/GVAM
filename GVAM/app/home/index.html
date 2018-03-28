@@ -4,11 +4,17 @@
 </div>
 
 <div style="width:90%; margin-left: auto; margin-right: auto;" ng-hide = "loading">
+    <div class="container" ng-show="lagot">
+        <div class="row">
+            <h4 style="color: red;">IMPORTANT!</h4>
+            <h6> You have missed 3 assignments, thus you are not in the current assignment rotation. Please consult an elder to reset your status</h6>
+        </div>
+    </div>
 
     <div class="container">
         <div class="row">
             <div class="col-sm-3">
-                <button type="button" class="btn btn-info btn-lg" ng-click="EditFinished()">Finalize Schedule</button>
+                <button type="button" class="btn btn-info btn-lg" ng-show="isAdmin" ng-click="EditFinished()">Finalize Schedule</button>
             </div>
         </div>
         <div class="row" ng-show="edit">
@@ -16,10 +22,6 @@
                 <div class="panel panel-primary">
                 <div class="panel-heading"><h4>{{sched[0].schedule_date}} {{sched[0].workbook}} {{sched[0].week_of}} </h4></div>
                 <div class="panel-body">
-                    <label>Pagbabasa ng Bibliya: </label>
-                    {{sched[0].Bible_Reader}}  <span><a><i class="fa fa-exclamation-circle" ng-click="brshow()"></i></a></span>
-                    <input type="text" ng-show="brsub" ng-model="sched[0].brsub">
-                    <br><br>
                     <label>Maging Mahusay sa Ministeryo </label>
                     <table class="table table-striped table-hover col-sm-12">
                         <thead ng-if="sched[0].Main_Hall == 'Ok'">
@@ -31,6 +33,14 @@
                             </tr>
                         </thead>
                         <tbody ng-if="sched[0].Main_Hall == 'Ok'">
+                            <tr>
+                                <td>Bible Reader </td>
+                                <td>
+                                    {{sched[0].BReader1.student}} <span><a><i class="fa fa-exclamation-circle" ng-click="brshow1()"></i></a></span>
+                                    <input type="text" ng-show="brsub1" ng-model="sched[0].brsub1">
+                                </td>
+                                <td>{{sched[0].BReader1.lesson}}</td>
+                            </tr>
                             <tr>
                                 <td>{{sched[0].MAssign1.assignment}}</td>
                                 <td>
@@ -68,6 +78,14 @@
                             </tr>
                         </thead>
                         <tbody ng-if="sched[0].Second_Hall == 'Ok'">
+                            <tr>
+                                <td>Bible Reader </td>
+                                <td>
+                                    {{sched[0].BReader2.student}} <span><a><i class="fa fa-exclamation-circle" ng-click="brshow2()"></i></a></span>
+                                    <input type="text" ng-show="brsub2" ng-model="sched[0].brsub2">
+                                </td>
+                                <td>{{sched[0].BReader2.lesson}}</td>
+                            </tr>
                             <tr>
                                 <td>{{sched[0].SAssign1.assignment}}</td>
                                 <td>
@@ -110,14 +128,11 @@
     <br>
 
     <div class="container">
-        <div class="row" ng-repeat="scd in sched" ng-if="scd.Done == 'No'">
+        <div class="row" ng-repeat="scd in sched track by $index" ng-if="scd.Done == 'No'">
             <div class="panel-group col-sm-12" style="table-layout: fixed;">
                 <div class="panel panel-primary">
                 <div class="panel-heading"><h4>{{scd.schedule_date}} {{scd.workbook}} {{scd.week_of}} </h4></div>
                 <div class="panel-body">
-                    <label>Pagbabasa ng Bibliya: </label>
-                    {{scd.Bible_Reader}}  
-                    <br><br>
                     <label>Maging Mahusay sa Ministeryo </label>
                     <table class="table table-striped table-hover col-sm-12">
                         <thead ng-if="scd.Main_Hall == 'Ok'">
@@ -129,6 +144,13 @@
                             </tr>
                         </thead>
                         <tbody ng-if="scd.Main_Hall == 'Ok'">
+                            <tr>
+                                <td>Bible Reader </td>
+                                <td>
+                                    {{scd.BReader1.student}} 
+                                </td>
+                                <td>{{scd.BReader1.lesson}}</td>
+                            </tr>
                             <tr>
                                 <td>{{scd.MAssign1.assignment}}</td>
                                 <td>
@@ -163,6 +185,13 @@
                             </tr>
                         </thead>
                         <tbody ng-if="scd.Second_Hall == 'Ok'">
+                            <tr>
+                                <td>Bible Reader </td>
+                                <td>
+                                    {{scd.BReader2.student}} 
+                                </td>
+                                <td>{{scd.BReader2.lesson}}</td>
+                            </tr>
                             <tr>
                                 <td>{{scd.SAssign1.assignment}}</td>
                                 <td>
