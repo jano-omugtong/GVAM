@@ -1029,6 +1029,71 @@
                     }else{
                         $scope.newSchedule.updated_date = $filter('date')(new Date(), "yyyy-MM-dd HH:mm:ss");                        
                             ScheduleService.updateSchedule($scope.newSchedule).then(function(){
+                                for (var i = 0; i<(vm.user.length - 1);i++){
+                                    var exist = false;
+                                    if ($scope.newSchedule.schedule_date == vm.user[i].scheduled_assign){
+                                        if ($scope.newSchedule.Main_Hall == "Ok"){
+                                            if ($scope.newSchedule.BReader1.student == vm.user[i].username)
+                                                exist = true;
+                                            else if ($scope.newSchedule.MAssign1.student == vm.user[i].username)
+                                                exist = true;
+                                            else if ($scope.newSchedule.MAssign2.student == vm.user[i].username)
+                                                exist = true;
+                                            else if ($scope.newSchedule.MAssign3.student == vm.user[i].username)
+                                                exist = true;
+                                        }
+                                        if ($scope.newSchedule.Second_Hall == "Ok"){
+                                            if ($scope.newSchedule.BReader2.student == vm.user[i].username)
+                                                exist = true;
+                                            else if ($scope.newSchedule.SAssign1.student == vm.user[i].username)
+                                                exist = true;
+                                            else if ($scope.newSchedule.SAssign2.student == vm.user[i].username)
+                                                exist = true;
+                                            else if ($scope.newSchedule.SAssign3.student == vm.user[i].username)
+                                                exist = true;
+                                        }
+                                        
+                                        if (!exist){
+                                            vm.user[i].scheduled_assign = "";
+                                            vm.user[i].rotation_done = "No";
+                                            UserService.Update(vm.user[i]);
+                                        }
+                                    }
+                                    if ($scope.newSchedule.schedule_date == vm.user[i].assistant_sched){
+                                        if ($scope.newSchedule.Main_Hall == "Ok"){
+                                            if ($scope.newSchedule.MAssign1.assistant){
+                                                if ($scope.newSchedule.MAssign1.assistant == vm.user[i].username)
+                                                exist = true;
+                                            }
+                                            if ($scope.newSchedule.MAssign2.assistant){
+                                                if ($scope.newSchedule.MAssign2.assistant == vm.user[i].username)
+                                                exist = true;
+                                            }
+                                            if ($scope.newSchedule.MAssign3.assistant){
+                                                if ($scope.newSchedule.MAssign3.assistant == vm.user[i].username)
+                                                exist = true;
+                                            }
+                                        }
+                                        if ($scope.newSchedule.Second_Hall == "Ok"){
+                                            if ($scope.newSchedule.SAssign1.assistant){
+                                                if ($scope.newSchedule.SAssign1.assistant == vm.user[i].username)
+                                                exist = true;
+                                            }
+                                            if ($scope.newSchedule.SAssign2.assistant){
+                                                if ($scope.newSchedule.SAssign2.assistant == vm.user[i].username)
+                                                exist = true;
+                                            }
+                                            if ($scope.newSchedule.SAssign3.assistant){
+                                                if ($scope.newSchedule.SAssign3.assistant == vm.user[i].username)
+                                                exist = true;
+                                            }
+                                        }
+                                        if (!exist) {
+                                            vm.user[i].assistant_sched = "";
+                                            UserService.Update(vm.user[i]);
+                                        }
+                                    }
+                                }
                             $('#myModal').modal('hide');
                             FlashService.Success('Schedule Updated');
                             $scope.newSchedule = {};
