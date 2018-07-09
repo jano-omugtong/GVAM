@@ -155,101 +155,7 @@
             $('.modal-backdrop').hide();
         }
 		
-		
-        /*
-            Function name: CSV - filename
-            Author(s): Reccion, Jeremy
-            Date Modified: 01/29/2018
-            Description: Sets the filename to 'Schedule Report' with the current date and time of download
-            Parameter(s): none
-            Return: String
-        */
-        $scope.setFilename = function(){
-            return "Schedule Report " + $filter('date')(new Date(), "yyyy-MM-dd h:mm a");
-        };
-
-        /*
-            Function name: CSV - schedule
-            Author(s): Reccion, Jeremy
-            Date Modified: 01/29/2018
-            Description: checks the value of each Schedule per each field. if the value is undefined, it is replaced by ' - '
-            Parameter(s): none
-            Return: Array
-        */
-        $scope.getFilteredSchedule = function(){
-
-            var temp = [];      //store $scope.filtered_Schedule to avoid any changes
-            var temp2 = [];     //store processed list of Schedule
-            var tempObj = {};   //store currently processed Schedule
-
-            //use angular.copy to avoid changes in binding
-            angular.copy($scope.filtered_schedule, temp); 
-            
-            //when user does not select anything in the Generate Report modal, return all field names
-            if($scope.reportColumns.length == 0){
-                $scope.reportColumns = $scope.fields.map(function(x){
-                    return x.name;
-                });
-                /* angular.forEach($scope.fields, function(value, key){
-                    $scope.reportColumns.push(value.name);
-                }); */
-            }
-
-            //use nested angular.forEach to process each value of each Schedule
-            //value = schedule object
-            //value2 = schedule[field.name]
-            angular.forEach(temp, function(value, key){
-                angular.forEach($scope.reportColumns, function(value2, key2){
-                    tempObj[value2] = (value[value2] != undefined) ? value[value2] : " - ";
-                });
-
-                temp2.push(tempObj);
-                tempObj = {};
-            });
-            return temp2;
-        };
-
-        /*
-            Function name: CSV - column headers and column order
-            Author(s): Reccion, Jeremy
-            Date Modified: 01/29/2018
-            Description: gets the fields selected by the user to enable column headers in the CSV file
-            Paramter(s): none
-            Return: Array
-        */
-        $scope.getColumns = function(){
-            var temp = []; //store processed fields
-
-            //when user does not select anything in the Generate Report modal, return all field names
-            if($scope.reportColumns.length == 0){
-                $scope.reportColumns = $scope.fields.map(function(x){
-                    return x.name;
-                });
-            }
-
-            /* console.log($scope.reportColumns);
-            angular.forEach($scope.reportColumns, function(value, key){
-                temp.push(value);
-            }); */
-
-            //use angular.copy to avoid binding changes
-            angular.copy($scope.reportColumns, temp);
-
-            return temp;
-        };
-
-        /*
-            Function name: CSV - reset report columns
-            Author(s): Reccion, Jeremy
-            Date Modified: 01/29/2018
-            Description: when 'Generate Report' is clicked, it resets the selected fields to be included in the report
-            Parameter(s): none
-            Return: none
-        */
-        $scope.resetReportColumns = function(){
-            $scope.reportColumns = [];
-        };
-
+        
         /*
             Function name: Sorting - sorted column and order
             Author(s): Reccion, Jeremy
@@ -371,7 +277,7 @@
                 $scope.userLength = Object.size(user);
                 for (var i = 0; i<$scope.userLength;i++){
                     if (user[i].username != "admin")
-                        if (user[i].service_status != 'W/Restrictions')
+                        if (user[i].service_status != 'W/Restrictions' && user[i].service_status != 'Pending' && user[i].service_status != 'Inactive')
                             vm.user[i] = user[i];
                 }
                 vm.user = $filter('orderBy')(vm.user, 'username');

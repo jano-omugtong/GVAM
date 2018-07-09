@@ -72,13 +72,13 @@
                 <p ng-show="showDate(field.type)" ng-model="aUsers[field.name]">{{aUsers[field.name]}}</p>
 
                 <!--show textbox-->
-                <input data="{{field.type}}" type="text" ng-show="showTextBox(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required ng-readonly = "isUser && readOnly(field.name)">
+                <input data="{{field.type}}" type="text" ng-show="showTextBox(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required ng-readonly = "isUser">
 
                 <!-- show email -->
-                <input name="{{field.type}}" data="{{field.type}}" type="email" ng-show="showEmail(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required ng-readonly = "isUser && readOnly(field.name)">
+                <input name="{{field.type}}" data="{{field.type}}" type="email" ng-show="showEmail(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required ng-readonly = "isUser">
 
                 <!-- show number -->
-                <input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="showNumber(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
+                <input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="showNumber(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required ng-readonly = "isUser">
 
                 <!-- show password -->
                 <input name="{{field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required>
@@ -88,23 +88,23 @@
                 <input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="confirmPassword[field.name]" class="form-control">
 
                 <!-- show text area -->
-                <textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
+                <textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="aUsers[field.name]" class="form-control" ng-required=field.required rows="4" cols="50" ng-readonly = "isUser"></textarea>
 
                 <!-- show checkbox -->
-                <div class="{{'checkBoxAdd '+field.name}}" name="{{'checkBoxInput '+field.type}}" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type)">
+                <div class="{{'checkBoxAdd '+field.name}}" name="{{'checkBoxInput '+field.type}}" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type)" ng-readonly = "isUser">
                     <input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" ng-checked="isChecked(field.name, option, field.type)" data="{{option}}" ng-click="pushToAUsers(field.name, option)">{{option}}<br>
                 </div>
 
                 <!-- show radio -->
-                <div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)">
+                <div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)" ng-readonly = "isUser">
                     <input class="{{option}}" type="radio" name="userRadioButton" ng-model="radioSelected" ng-change="putToModel(option, field.name)" value="{{option}}" ng-checked="isRadioSelected(field.name, option, field.type)">{{option}}<br>
                 </div>
 
                 <!-- show date -->
-                <input data="{{field.type}}" type="date" ng-show="showDate(field.type)" ng-model="tempDate" ng-change="pushDateToAUsers(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-required=field.required>
+                <input data="{{field.type}}" type="date" ng-show="showDate(field.type)" ng-model="tempDate" ng-change="pushDateToAUsers(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-required=field.required ng-readonly = "isUser">
 
                 <!-- show dropdown -->
-                <select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="aUsers[field.name]" ng-disabled = "isUser && readOnly(field.name)">
+                <select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="aUsers[field.name]" ng-disabled = "isUser">
                     <option value="" ng-if="!field.required"></option>
                     <option ng-repeat="option in field.options">{{option}}</option>
                 </select>

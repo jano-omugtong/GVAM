@@ -630,35 +630,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="reportFilterModal" role="dialog">
-        <div class="modal-dialog">
-                
-            <!-- Modal content-->
-            <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Customize Report Fields</h4>
-            </div>
-            <div class="modal-body">
-                Select the columns you want to display in the report
-                <form>
-					<select ng-model="reportColumns" class="form-control" multiple>
-                        <option ng-repeat="field in fields">{{field.name}}</option>
-                    </select>
-                </form>
-                <br>
-                <small>*Not selecting anything will consider all fields</small>  <br>
-                <small>*Hold <b>Ctrl</b> key when selecting multiple items</small>  <br>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-success" ng-csv="getFilteredSchedule()" csv-header="getColumns()" csv-column-order="getColumns()" filename="{{setFilename()}}.csv" data-dismiss="modal">
-                    <span class="glyphicon glyphicon-download-alt"></span> Download
-                </button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-            </div>
-        </div>
-    </div>
-  
     <div class="row" ng-hide = "loading">
         <div class="col-sm-4">
             <div class="panel panel-success">
@@ -667,9 +638,6 @@
                     <div class="form-inline">    
                         <button type="addButton" class="btn btn-info" ng-click="resetModal(); declareSelected()" data-toggle="modal" data-target="#myModal">
                         <span class="glyphicon glyphicon-plus"></span> New
-                        </button>
-                        <button type="reportButton" class="btn btn-success" data-toggle="modal" data-target="#reportFilterModal" ng-click="resetReportColumns()">
-                            Generate Report
                         </button>
                     </div>                           
                 </div>
