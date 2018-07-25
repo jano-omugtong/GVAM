@@ -275,10 +275,10 @@
             UserService.GetAll().then(function (user) {
                 $scope.allUsers = user;
                 $scope.userLength = Object.size(user);
-                for (var i = 0; i<$scope.userLength;i++){
+                for (var i = 0, j= 0; i<$scope.userLength;i++){
                     if (user[i].username != "admin")
                         if (user[i].service_status != 'W/Restrictions' && user[i].service_status != 'Pending' && user[i].service_status != 'Inactive')
-                            vm.user[i] = user[i];
+                            vm.user[j++] = user[i];
                 }
                 vm.user = $filter('orderBy')(vm.user, 'username');
             }).finally(function() {
