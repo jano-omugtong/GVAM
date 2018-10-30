@@ -20,6 +20,7 @@
         service.Insert = Insert;
         service.UploadFile = UploadFile;
         service.deleteProfilePic = deleteProfilePic;
+        service.GetAllByGender = GetAllByGender;
  
         return service;
 
@@ -89,6 +90,10 @@
         function GetAll() {
             return $http.get('/api/users/all').then(handleSuccess, handleError);
         }
+
+       function GetAllByGender(gender) {
+        return $http.get('/api/users/all/' + gender).then(handleSuccess, handleError);
+    }
         
         /*
             Function name: User App Service Get By Id

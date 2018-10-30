@@ -479,11 +479,11 @@
                             </div>
                             <div class="col-xs-2">
                                 <label>Lesson </label>
-                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.SAssign1.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
+                                <input name="lesson_no" data="number" type="number" ng-model="newSchedule.SAssign2.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'schedule_date')" class="form-control">
                             </div>
                             <div class="col-xs-3">
                                 <label>Assistant </label>
-                                <select name="2ndStudentAsst" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign1.assistant" class="form-control">
+                                <select name="2ndStudentAsst" data="{{field.type}}" ng-disabled = "type != 'add' && (readOnly || field.name == 'schedule_date')" ng-model="newSchedule.SAssign2.assistant" class="form-control">
                                     <option value="" selected disabled hidden>Choose here</option>
                                     <option ng-if="student[srchSA2] == srchSA2_1 && newSchedule.SAssign2.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
                                 </select>

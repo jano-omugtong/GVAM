@@ -37,6 +37,7 @@ app.use('/register', require('./controllers/register.controller'));
 app.use('/app', require('./controllers/app.controller'));
 app.use('/api/users', require('./controllers/api/users.controller'));
 app.use('/api/rotations', require('./controllers/api/rotation.controller'));
+app.use('/api/meetings', require('./controllers/api/meeting.controller'));
  
 //added by jeremy
 app.use('/api/schedule', require('./controllers/api/schedule.controller'));
@@ -57,6 +58,9 @@ io.on('connection', function(socket){
     });
     socket.on('rotationChange', function(){
          io.emit('rotationChange');
+    });
+    socket.on('meetingChange', function(){
+        io.emit('meetingChange');
     });
 
     //console.log('a user is connected');

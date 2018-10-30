@@ -257,7 +257,10 @@
                 } break;
                 case 'schedule': {
                     return (field != 'schedule_date' && field != 'location' && field != 'type') ? true : false;
-                }break;
+                } break;
+                case 'meeting': {
+                    return (field != 'meeting_date') ? true : false;
+                } break;
                 case 'rotation': {
                     return (field != 'rotation_id' && field != 'service_yr' && field != 'rotation_no') ? true : false;
                 } break;

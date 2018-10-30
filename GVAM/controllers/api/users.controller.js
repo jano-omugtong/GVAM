@@ -7,11 +7,13 @@ var userService = require('services/user.service');
 // routes
 router.get('/isAdmin', getAdminUser);
 router.get('/all', getAllUsers);
+router.get('/all/:gender', getAllByGender);
 router.post('/authenticate', authenticateUser);
 router.post('/accountOn', accountOn);       // added by dyan0
 router.post('/addUser', addUser);
 router.post('/register', registerUser);
 router.get('/current', getCurrentUser);
+router.get('/:_id', getById);
 router.put('/:_id', updateUser);
 router.post('/uAll', updateAll);
 router.delete('/:_id', deleteUser);
@@ -60,6 +62,20 @@ function uploadPic(req, res) {
 
 function getAllUsers(req, res) {
     userService.getAll(req.user.sub)
+        .then(function (user) {
+            if (user) {
+                res.send(user);
+            } else {
+                res.sendStatus(404);
+            }
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getAllByGender(req, res) {
+    userService.getAllByGender(req.params.gender)
         .then(function (user) {
             if (user) {
                 res.send(user);
@@ -121,6 +137,21 @@ function registerUser(req, res) {
         });
 }
  
+
+function getById(req, res) {
+    userService.getById(req.params._id)
+        .then(function (user) {
+            if (user) {
+                res.send(user);
+            } else {
+                res.sendStatus(404);
+            }
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
 function getCurrentUser(req, res) {
     userService.getById(req.user.sub)
         .then(function (user) {

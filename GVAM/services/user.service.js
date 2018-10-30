@@ -38,7 +38,7 @@ var service = {};
 
 //Added by Glenn
 service.getAll = getAll;
-
+service.getAllByGender = getAllByGender;
 service.authenticate = authenticate;
 service.accountOn = accountOn;      // added by dyan0
 service.getById = getById;
@@ -225,6 +225,28 @@ function getAll() {
     
     return deferred.promise;
 }
+
+
+function getAllByGender(gender) {
+    var deferred = Q.defer();
+ 
+    //db.users.find({role:  {$ne : "Admin"}}).toArray(function(err, user) {
+    db.users.find({gender: gender}).toArray(function(err, user) {
+        if (err) deferred.reject(err);
+ 
+        if (user) {
+            // return user (without hashed password)
+            deferred.resolve(_.omit(user, 'hash'));
+        } else {
+            // user not found
+            deferred.resolve();
+        }
+    });
+    
+    return deferred.promise;
+}
+
+
 /*
     Function name: Add User Function
     Author(s): Sanchez, Macku

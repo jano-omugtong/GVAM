@@ -14,7 +14,7 @@
         .module('app')
         .controller('Home.IndexController', Controller);
  
-     function Controller($window, ScheduleService, $scope, $interval, $filter, socket, FlashService, UserService) {
+     function Controller($window, MeetingService, $scope, $interval, $filter, socket, FlashService, UserService) {
  
         //initialization
         $scope.sched = [];
@@ -38,7 +38,7 @@
 
         function getAllSchedule(){
             //get all Schedule
-            ScheduleService.GetAll().then(function(schedule){
+            MeetingService.getAllMeetings().then(function(schedule){
                 if(schedule.length > 0){    
                     var i = 0, j = 0;
                         angular.forEach(schedule, function(value, key){
@@ -85,7 +85,7 @@
 
         $scope.Save = function() {
             $scope.sched[0].Done = "Yes";
-            ScheduleService.updateSchedule($scope.sched[0]).then(function(){
+            MeetingService.updateMeeting($scope.sched[0]).then(function(){
                 
                 for (var i = 0; i<(vm.user.length - 1);i++){
                     if ($scope.sched[0].Main_Hall == 'Ok'){
@@ -225,7 +225,7 @@
                                 UserService.Update(vm.user[i]);
                             }
                         }
-                        if(vm.user[i].username == $scope.sched[0].SAssign6.student){
+                        if(vm.user[i].username == $scope.sched[0].SAssign3.student){
                             if ($scope.sched[0].sub6){
                                 if (!vm.user[i].assign_missed){
                                     vm.user[i].assign_missed = 1;

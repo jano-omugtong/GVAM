@@ -1,0 +1,825 @@
+<h2>Meeting Schedule</h2>
+
+<div style = "text-align:center" class = "spinner" ng-show = "loading"> 
+        <img src="loader.gif"/>
+</div>
+
+<div class="container">
+
+<div ng-show="showMainFlash && !changePasswordModal" class="flash-message" ng-if="flash">
+    <div class="{{'alert alert-' + flash.type}}" ng-bind="flash.message"></div>
+</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Add Publisher</h4>
+        </div>
+		        <div class="modal-body">
+		          <div ng-show="showAddFlash" class="flash-message" ng-if="flash">
+        				<div class="{{'alert alert-' + flash.type}}" ng-bind="flash.message"></div>
+					</div>
+		          <form name = "meetingAddForm">
+						<small class="pull-right"><i>Fields marked with an asterisk(<span style = "color:red">*</span>) are required.</i></small>
+						<br>
+					<div ng-repeat="field in fields" ng-if="field.name != 'password'">
+			          	<label for="{{field.name}}" style="text-transform: capitalize;">{{field.name}}:</label>
+			          	<span style = "color:red" ng-if="field.required">*</span>
+
+			          	<!--show textbox-->
+			          	<input data="{{field.type}}" type="text" ng-show="showTextBox(field.type)" ng-model="aMeetings[field.name]" class="form-control" ng-required=field.required>
+
+			          	<!-- show email -->
+			          	<input name="{{field.type}}" data="{{field.type}}" type="email" ng-show="showEmail(field.type)" ng-model="aMeetings[field.name]" class="form-control" ng-required=field.required>
+
+			          	<!-- show number -->
+			          	<input name="{{field.type}}" data="{{field.type}}" type="text" ng-show="showNumber(field.type)" ng-model="aMeetings[field.name]" class="form-control" ng-required=field.required>
+
+			          	<!-- show password -->
+			          	<input name="{{field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="aMeetings[field.name]" class="form-control" ng-required=field.required>
+
+			          	<!-- show confirm password -->
+			          	<label ng-show="showPassword(field.type)" for=field.name>Confirm {{field.name}}: </label>
+			          	<input name="{{'confirm '+field.type}}" data="{{field.type}}" type="{{field.type=='password'?'password':'text';}}" ng-show="showPassword(field.type)" ng-model="confirmPassword[field.name]" class="form-control">
+
+			          	<!-- show text area -->
+  			          	<textarea data="{{field.type}}" ng-show="showTextArea(field.type)" ng-model="aMeetings[field.name]" class="form-control" ng-required=field.required rows="4" cols="50"></textarea>
+
+			          	<!-- show checkbox -->
+			          	<div class="{{'checkBoxAdd '+field.name}}" name="checkBoxInput" ng-repeat="option in field.options" data="{{field.type}}" ng-show="showCheckBox(field.type)">
+			          		<input class="{{option}}" type="checkbox" name="{{option}}" ng-model="optionSelected" data="{{option}}" ng-click="pushToAMeetings(field.name, option)">{{option}}<br>
+			          	</div>
+
+			          	<!-- show radio -->
+			          	<div ng-repeat="option in field.options" data="{{field.type}}" ng-show="showRadio(field.type)">
+			          		<input class="{{option}}" type="radio" name="meetingRadioButton" ng-model="radioSelected" ng-change="putToModel(option, field.name)" value="{{option}}">{{option}}<br>
+			          	</div>
+
+			          	<!-- show date -->
+			          	<input data="{{field.type}}" type="date" ng-show="showDate(field.type)" ng-model="tempDate" ng-change="pushDateToAMeetings(field.name, this.tempDate)" class="form-control addTicketDateInput" ng-required=field.required>
+
+			          	<!-- show dropdown -->
+			          	<select class="form-control" data="{{field.type}}" ng-show="showDropDown(field.type)" ng-model="aMeetings[field.name]">
+							<option value="" ng-if="!field.required"></option>
+							<option ng-repeat="option in field.options">{{option}}</option>
+						</select>
+
+						<!-- assignment div -->
+						<div>
+							<!-- show 1st Hall Assignments -->
+							<div class="row" ng-show="field.name == 'Main_Hall'">
+								<div class="col-xs-4">
+									<label>Bible Reader </label>
+									<select name="1stBReader" data="{{field.type}}" ng-model="aMeetings.BReader1.student" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student.gender == 'M' && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+								<div class="col-xs-2">
+									<label>Lesson </label>
+									<input name="lesson_no" data="number" type="number" ng-model="aMeetings.BReader1.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'meeting_date')" class="form-control">
+								</div>
+							</div>
+	
+							<div class="row" ng-show="field.name == 'Main_Hall'">
+								<div class="col-xs-3">
+									<label>1st Assignment </label>
+									<select name="1stAssignment" data="{{field.type}}" ng-model="aMeetings.MAssign1.assignment" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option  >Video</option>
+										<option  >Initial Call</option>
+										<option  >1st Return Visit</option>
+										<option  >2nd Return Visit</option>
+										<option  >3rd Return Visit</option>
+										<option  >Bible Study</option>
+										<option  >Talk</option>
+									</select>
+								</div>
+								<div class="col-xs-4">
+									<label>1st Student </label>
+									<select name="1stStudent" data="{{field.type}}" ng-model="aMeetings.MAssign1.student" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-show="readonly" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchM1] == srchM1_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+								<div class="col-xs-2">
+									<label>Lesson </label>
+									<input name="lesson_no" data="number" type="number" ng-model="aMeetings.MAssign1.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'meeting_date')" class="form-control">
+								</div>
+								<div class="col-xs-3">
+									<label>Assistant </label>
+									<select name="1stStudentAsst" data="{{field.type}}" ng-model="aMeetings.MAssign1.assistant" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchMA1] == srchMA1_1 && aMeetings.MAssign1.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row" ng-show="field.name == 'Main_Hall'">
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchM1">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchM1_1">
+										<option ng-if="srchM1 == 'gender'">M</option>
+										<option ng-if="srchM1 == 'gender'">F</option>
+										<option ng-if="srchM1 == 'civil status'">Youth</option>
+										<option ng-if="srchM1 == 'civil status'">Married</option>
+										<option ng-if="srchM1 == 'civil status'">Senior</option>
+										<option ng-if="srchM1 == 'service_status'">Publisher</option>
+										<option ng-if="srchM1 == 'service_status'">Pioneer</option>
+										<option ng-if="srchM1 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchM1 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchM1 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchM1 == 'priviledges'">Elder</option>
+										<option ng-if="srchM1 == 'group_no'">1</option>
+										<option ng-if="srchM1 == 'group_no'">2</option>
+										<option ng-if="srchM1 == 'group_no'">3</option>
+										<option ng-if="srchM1 == 'group_no'">4</option>
+										<option ng-if="srchM1 == 'group_no'">5</option>
+										<option ng-if="srchM1 == 'group_no'">6</option>
+									</select>
+								</div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchMA1">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchMA1_1">
+										<option ng-if="srchMA1 == 'gender'">M</option>
+										<option ng-if="srchMA1 == 'gender'">F</option>
+										<option ng-if="srchMA1 == 'civil status'">Youth</option>
+										<option ng-if="srchMA1 == 'civil status'">Married</option>
+										<option ng-if="srchMA1 == 'civil status'">Senior</option>
+										<option ng-if="srchMA1 == 'service_status'">Publisher</option>
+										<option ng-if="srchMA1 == 'service_status'">Pioneer</option>
+										<option ng-if="srchMA1 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchMA1 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchMA1 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchMA1 == 'priviledges'">Elder</option>
+										<option ng-if="srchMA1 == 'group_no'">1</option>
+										<option ng-if="srchMA1 == 'group_no'">2</option>
+										<option ng-if="srchMA1 == 'group_no'">3</option>
+										<option ng-if="srchMA1 == 'group_no'">4</option>
+										<option ng-if="srchMA1 == 'group_no'">5</option>
+										<option ng-if="srchMA1 == 'group_no'">6</option>
+									</select>
+								</div>
+							</div>
+	
+							<div class="row" ng-show="field.name == 'Main_Hall'">
+								<div class="col-xs-3">
+									<label>2nd Assignment </label>
+									<select name="2ndAssignment" data="{{field.type}}" ng-model="aMeetings.MAssign2.assignment" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option >Video</option>
+										<option >Initial Call</option>
+										<option >1st Return Visit</option>
+										<option >2nd Return Visit</option>
+										<option >3rd Return Visit</option>
+										<option >Bible Study</option>
+										<option >Talk</option>
+									</select>
+								</div>
+								<div class="col-xs-4">
+									<label>2nd Student </label>
+									<select name="2ndStudent" data="{{field.type}}" ng-model="aMeetings.MAssign2.student" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchM2] == srchM2_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+								<div class="col-xs-2">
+									<label>Lesson </label>
+									<input name="lesson_no" data="number" type="number" ng-model="aMeetings.MAssign2.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'meeting_date')" class="form-control">
+								</div>
+								<div class="col-xs-3">    
+									<label>Assistant </label>
+									<select name="2ndStudentAsst" data="{{field.type}}" ng-model="aMeetings.MAssign2.assistant" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchMA2] == srchMA2_1 && aMeetings.MAssign2.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row" ng-show="field.name == 'Main_Hall'">
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchM2">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchM2_1">
+										<option ng-if="srchM2 == 'gender'">M</option>
+										<option ng-if="srchM2 == 'gender'">F</option>
+										<option ng-if="srchM2 == 'civil status'">Youth</option>
+										<option ng-if="srchM2 == 'civil status'">Married</option>
+										<option ng-if="srchM2 == 'civil status'">Senior</option>
+										<option ng-if="srchM2 == 'service_status'">Publisher</option>
+										<option ng-if="srchM2 == 'service_status'">Pioneer</option>
+										<option ng-if="srchM2 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchM2 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchM2 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchM2 == 'priviledges'">Elder</option>
+										<option ng-if="srchM2 == 'group_no'">1</option>
+										<option ng-if="srchM2 == 'group_no'">2</option>
+										<option ng-if="srchM2 == 'group_no'">3</option>
+										<option ng-if="srchM2 == 'group_no'">4</option>
+										<option ng-if="srchM2 == 'group_no'">5</option>
+										<option ng-if="srchM2 == 'group_no'">6</option>
+									</select>
+								</div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchMA2">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchMA2_1">
+										<option ng-if="srchMA2 == 'gender'">M</option>
+										<option ng-if="srchMA2 == 'gender'">F</option>
+										<option ng-if="srchMA2 == 'civil status'">Youth</option>
+										<option ng-if="srchMA2 == 'civil status'">Married</option>
+										<option ng-if="srchMA2 == 'civil status'">Senior</option>
+										<option ng-if="srchMA2 == 'service_status'">Publisher</option>
+										<option ng-if="srchMA2 == 'service_status'">Pioneer</option>
+										<option ng-if="srchMA2 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchMA2 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchMA2 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchMA2 == 'priviledges'">Elder</option>
+										<option ng-if="srchMA2 == 'group_no'">1</option>
+										<option ng-if="srchMA2 == 'group_no'">2</option>
+										<option ng-if="srchMA2 == 'group_no'">3</option>
+										<option ng-if="srchMA2 == 'group_no'">4</option>
+										<option ng-if="srchMA2 == 'group_no'">5</option>
+										<option ng-if="srchMA2 == 'group_no'">6</option>
+									</select>
+								</div>
+							</div>
+	
+							<div class="row" ng-show="field.name == 'Main_Hall'">
+								<div class="col-xs-3">
+									<label>3rd Assignment </label>
+									<select name="3rdAssignment" data="{{field.type}}" ng-model="aMeetings.MAssign3.assignment" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option >Video</option>
+										<option >Initial Call</option>
+										<option >1st Return Visit</option>
+										<option >2nd Return Visit</option>
+										<option >3rd Return Visit</option>
+										<option >Bible Study</option>
+										<option >Talk</option>
+									</select>
+								</div>
+								<div class="col-xs-4">
+									<label>3rd Student </label>
+									<select name="3rdStudent" data="{{field.type}}" ng-model="aMeetings.MAssign3.student" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchM3] == srchM3_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+								<div class="col-xs-2">
+									<label>Lesson </label>
+									<input name="lesson_no" data="number" type="number" ng-model="aMeetings.MAssign3.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'meeting_date')" class="form-control">
+								</div>
+								<div class="col-xs-3">
+									<label>Assistant </label>
+									<select name="2ndStudentAsst" data="{{field.type}}" ng-model="aMeetings.MAssign3.assistant" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchMA3] == srchMA3_1 && aMeetings.MAssign3.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row" ng-show="field.name == 'Main_Hall'">
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchM3">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchM3_1">
+										<option ng-if="srchM3 == 'gender'">M</option>
+										<option ng-if="srchM3 == 'gender'">F</option>
+										<option ng-if="srchM3 == 'civil status'">Youth</option>
+										<option ng-if="srchM3 == 'civil status'">Married</option>
+										<option ng-if="srchM3 == 'civil status'">Senior</option>
+										<option ng-if="srchM3 == 'service_status'">Publisher</option>
+										<option ng-if="srchM3 == 'service_status'">Pioneer</option>
+										<option ng-if="srchM3 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchM3 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchM3 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchM3 == 'priviledges'">Elder</option>
+										<option ng-if="srchM3 == 'group_no'">1</option>
+										<option ng-if="srchM3 == 'group_no'">2</option>
+										<option ng-if="srchM3 == 'group_no'">3</option>
+										<option ng-if="srchM3 == 'group_no'">4</option>
+										<option ng-if="srchM3 == 'group_no'">5</option>
+										<option ng-if="srchM3 == 'group_no'">6</option>
+									</select>
+								</div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchMA3">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchMA3_1">
+										<option ng-if="srchMA3 == 'gender'">M</option>
+										<option ng-if="srchMA3 == 'gender'">F</option>
+										<option ng-if="srchMA3 == 'civil status'">Youth</option>
+										<option ng-if="srchMA3 == 'civil status'">Married</option>
+										<option ng-if="srchMA3 == 'civil status'">Senior</option>
+										<option ng-if="srchMA3 == 'service_status'">Publisher</option>
+										<option ng-if="srchMA3 == 'service_status'">Pioneer</option>
+										<option ng-if="srchMA3 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchMA3 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchMA3 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchMA3 == 'priviledges'">Elder</option>
+										<option ng-if="srchMA3 == 'group_no'">1</option>
+										<option ng-if="srchMA3 == 'group_no'">2</option>
+										<option ng-if="srchMA3 == 'group_no'">3</option>
+										<option ng-if="srchMA3 == 'group_no'">4</option>
+										<option ng-if="srchMA3 == 'group_no'">5</option>
+										<option ng-if="srchMA3 == 'group_no'">6</option>
+									</select>
+								</div>
+							</div>
+						
+						<!-- show 2nd Hall Assignments -->
+							<div class="row" ng-show="field.name == 'Second_Hall'">
+								<div class="col-xs-4">
+									<label>Bible Reader </label>
+									<select name="2ndBReader" data="{{field.type}}" ng-model="aMeetings.BReader2.student" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student.gender == 'M' && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+								<div class="col-xs-2">
+									<label>Lesson </label>
+									<input name="lesson_no" data="number" type="number" ng-model="aMeetings.BReader2.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'meeting_date')" class="form-control">
+								</div>
+							</div>
+	
+							<div class="row" ng-show="field.name == 'Second_Hall'">
+								<div class="col-xs-3">
+									<label>1st Assignment </label>
+									<select name="1stAssignment" data="{{field.type}}" ng-model="aMeetings.SAssign1.assignment" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option >Video</option>
+										<option >Initial Call</option>
+										<option >1st Return Visit</option>
+										<option >2nd Return Visit</option>
+										<option >3rd Return Visit</option>
+										<option >Bible Study</option>
+										<option >Talk</option>
+									</select>
+								</div>
+								<div class="col-xs-4">
+									<label>1st Student </label>
+									<select name="1stStudent" data="{{field.type}}" ng-model="aMeetings.SAssign1.student" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchS1] == srchS1_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+								<div class="col-xs-2">
+									<label>Lesson </label>
+									<input name="lesson_no" data="number" type="number" ng-model="aMeetings.SAssign1.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'meeting_date')" class="form-control">
+								</div>
+								<div class="col-xs-3">
+									<label>Assistant </label>
+									<select name="1stStudentAsst" data="{{field.type}}" ng-model="aMeetings.SAssign1.assistant" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchSA1] == srchSA1_1 && aMeetings.SAssign1.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row" ng-show="field.name == 'Second_Hall'">
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchS1">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchS1_1">
+										<option ng-if="srchS1 == 'gender'">M</option>
+										<option ng-if="srchS1 == 'gender'">F</option>
+										<option ng-if="srchS1 == 'civil status'">Youth</option>
+										<option ng-if="srchS1 == 'civil status'">Married</option>
+										<option ng-if="srchS1 == 'civil status'">Senior</option>
+										<option ng-if="srchS1 == 'service_status'">Publisher</option>
+										<option ng-if="srchS1 == 'service_status'">Pioneer</option>
+										<option ng-if="srchS1 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchS1 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchS1 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchS1 == 'priviledges'">Elder</option>
+										<option ng-if="srchS1 == 'group_no'">1</option>
+										<option ng-if="srchS1 == 'group_no'">2</option>
+										<option ng-if="srchS1 == 'group_no'">3</option>
+										<option ng-if="srchS1 == 'group_no'">4</option>
+										<option ng-if="srchS1 == 'group_no'">5</option>
+										<option ng-if="srchS1 == 'group_no'">6</option>
+									</select>
+								</div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchSA1">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchSA1_1">
+										<option ng-if="srchSA1 == 'gender'">M</option>
+										<option ng-if="srchSA1 == 'gender'">F</option>
+										<option ng-if="srchSA1 == 'civil status'">Youth</option>
+										<option ng-if="srchSA1 == 'civil status'">Married</option>
+										<option ng-if="srchSA1 == 'civil status'">Senior</option>
+										<option ng-if="srchSA1 == 'service_status'">Publisher</option>
+										<option ng-if="srchSA1 == 'service_status'">Pioneer</option>
+										<option ng-if="srchSA1 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchSA1 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchSA1 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchSA1 == 'priviledges'">Elder</option>
+										<option ng-if="srchSA1 == 'group_no'">1</option>
+										<option ng-if="srchSA1 == 'group_no'">2</option>
+										<option ng-if="srchSA1 == 'group_no'">3</option>
+										<option ng-if="srchSA1 == 'group_no'">4</option>
+										<option ng-if="srchSA1 == 'group_no'">5</option>
+										<option ng-if="srchSA1 == 'group_no'">6</option>
+									</select>
+								</div>
+							</div>
+	
+							<!-- show 2nd Hall Assignments -->
+							<div class="row" ng-show="field.name == 'Second_Hall'">
+								<div class="col-xs-3">
+									<label>2nd Assignment </label>
+									<select name="2ndAssignment" data="{{field.type}}" ng-model="aMeetings.SAssign2.assignment" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option >Video</option>
+										<option >Initial Call</option>
+										<option >1st Return Visit</option>
+										<option >2nd Return Visit</option>
+										<option >3rd Return Visit</option>
+										<option >Bible Study</option>
+										<option >Talk</option>
+									</select>
+								</div>
+								<div class="col-xs-4">
+									<label>2nd Student </label>
+									<select name="2ndStudent" data="{{field.type}}" ng-model="aMeetings.SAssign2.student" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchS2] == srchS2_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+								<div class="col-xs-2">
+									<label>Lesson </label>
+									<input name="lesson_no" data="number" type="number" ng-model="aMeetings.SAssign2.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'meeting_date')" class="form-control">
+								</div>
+								<div class="col-xs-3">
+									<label>Assistant </label>
+									<select name="2ndStudentAsst" data="{{field.type}}" ng-model="aMeetings.SAssign2.assistant" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchSA2] == srchSA2_1 && aMeetings.SAssign2.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row" ng-show="field.name == 'Second_Hall'">
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchS2">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchS2_1">
+										<option ng-if="srchS2 == 'gender'">M</option>
+										<option ng-if="srchS2 == 'gender'">F</option>
+										<option ng-if="srchS2 == 'civil status'">Youth</option>
+										<option ng-if="srchS2 == 'civil status'">Married</option>
+										<option ng-if="srchS2 == 'civil status'">Senior</option>
+										<option ng-if="srchS2 == 'service_status'">Publisher</option>
+										<option ng-if="srchS2 == 'service_status'">Pioneer</option>
+										<option ng-if="srchS2 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchS2 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchS2 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchS2 == 'priviledges'">Elder</option>
+										<option ng-if="srchS2 == 'group_no'">1</option>
+										<option ng-if="srchS2 == 'group_no'">2</option>
+										<option ng-if="srchS2 == 'group_no'">3</option>
+										<option ng-if="srchS2 == 'group_no'">4</option>
+										<option ng-if="srchS2 == 'group_no'">5</option>
+										<option ng-if="srchS2 == 'group_no'">6</option>
+									</select>
+								</div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchSA2">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchSA2_1">
+										<option ng-if="srchSA2 == 'gender'">M</option>
+										<option ng-if="srchSA2 == 'gender'">F</option>
+										<option ng-if="srchSA2 == 'civil status'">Youth</option>
+										<option ng-if="srchSA2 == 'civil status'">Married</option>
+										<option ng-if="srchSA2 == 'civil status'">Senior</option>
+										<option ng-if="srchSA2 == 'service_status'">Publisher</option>
+										<option ng-if="srchSA2 == 'service_status'">Pioneer</option>
+										<option ng-if="srchSA2 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchSA2 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchSA2 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchSA2 == 'priviledges'">Elder</option>
+										<option ng-if="srchSA2 == 'group_no'">1</option>
+										<option ng-if="srchSA2 == 'group_no'">2</option>
+										<option ng-if="srchSA2 == 'group_no'">3</option>
+										<option ng-if="srchSA2 == 'group_no'">4</option>
+										<option ng-if="srchSA2 == 'group_no'">5</option>
+										<option ng-if="srchSA2 == 'group_no'">6</option>
+									</select>
+								</div>
+							</div>
+	
+							<!-- show 2nd Hall Assignments -->
+							<div class="row" ng-show="field.name == 'Second_Hall'">
+								<div class="col-xs-3">
+									<label>3rd Assignment </label>
+									<select name="3rdAssignment" data="{{field.type}}" ng-model="aMeetings.SAssign3.assignment" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option >Video</option>
+										<option >Initial Call</option>
+										<option >1st Return Visit</option>
+										<option >2nd Return Visit</option>
+										<option >3rd Return Visit</option>
+										<option >Bible Study</option>
+										<option >Talk</option>
+									</select>
+								</div>
+								<div class="col-xs-4">
+									<label>3rd Student </label>
+									<select name="3rdStudent" data="{{field.type}}" ng-model="aMeetings.SAssign3.student" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchS3] == srchS3_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+								<div class="col-xs-2">
+									<label>Lesson </label>
+									<input name="lesson_no" data="number" type="number" ng-model="aMeetings.SAssign3.lesson" ng-readOnly = "type != 'add' && (readOnly || field.name == 'meeting_date')" class="form-control">
+								</div>
+								<div class="col-xs-3">
+									<label>Assistant </label>
+									<select name="2ndStudentAsst" data="{{field.type}}" ng-model="aMeetings.SAssign3.assistant" class="form-control">
+										<option value="" selected disabled hidden>Choose here</option>
+										<option ng-if="student[srchSA3] == srchSA3_1 && aMeetings.SAssign3.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="row" ng-show="field.name == 'Second_Hall'">
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchS3">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchS3_1">
+										<option ng-if="srchS3 == 'gender'">M</option>
+										<option ng-if="srchS3 == 'gender'">F</option>
+										<option ng-if="srchS3 == 'civil status'">Youth</option>
+										<option ng-if="srchS3 == 'civil status'">Married</option>
+										<option ng-if="srchS3 == 'civil status'">Senior</option>
+										<option ng-if="srchS3 == 'service_status'">Publisher</option>
+										<option ng-if="srchS3 == 'service_status'">Pioneer</option>
+										<option ng-if="srchS3 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchS3 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchS3 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchS3 == 'priviledges'">Elder</option>
+										<option ng-if="srchS3 == 'group_no'">1</option>
+										<option ng-if="srchS3 == 'group_no'">2</option>
+										<option ng-if="srchS3 == 'group_no'">3</option>
+										<option ng-if="srchS3 == 'group_no'">4</option>
+										<option ng-if="srchS3 == 'group_no'">5</option>
+										<option ng-if="srchS3 == 'group_no'">6</option>
+									</select>
+								</div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3">
+									<select class="form-control" ng-model="srchSA3">
+										<option value="">all</option>
+										<option value="{{field.name}}" ng-repeat="field in fieldsUsr track by $index">{{field.name}}</option>
+									</select>
+									<select class="form-control" ng-model="srchSA3_1">
+										<option ng-if="srchSA3 == 'gender'">M</option>
+										<option ng-if="srchSA3 == 'gender'">F</option>
+										<option ng-if="srchSA3 == 'civil status'">Youth</option>
+										<option ng-if="srchSA3 == 'civil status'">Married</option>
+										<option ng-if="srchSA3 == 'civil status'">Senior</option>
+										<option ng-if="srchSA3 == 'service_status'">Publisher</option>
+										<option ng-if="srchSA3 == 'service_status'">Pioneer</option>
+										<option ng-if="srchSA3 == 'service_status'">Ex-Pioneer</option>
+										<option ng-if="srchSA3 == 'service_status'">Unbaptized</option>
+										<option ng-if="srchSA3 == 'priviledges'">Ministerial Servant</option>
+										<option ng-if="srchSA3 == 'priviledges'">Elder</option>
+										<option ng-if="srchSA3 == 'group_no'">1</option>
+										<option ng-if="srchSA3 == 'group_no'">2</option>
+										<option ng-if="srchSA3 == 'group_no'">3</option>
+										<option ng-if="srchSA3 == 'group_no'">4</option>
+										<option ng-if="srchSA3 == 'group_no'">5</option>
+										<option ng-if="srchSA3 == 'group_no'">6</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+		          	</div>
+		        	<br>
+		          </form>
+		        </div><!--modal body-->
+		        <div class="modal-footer" >
+		        	<button class="btn btn-primary" ng-click="addMeeting()">Add Meeting</button>
+					<button type="button" class="btn btn-danger" ng-click="vm.restart()" data-dismiss="modal">Close</button>
+					<br>
+				</div>
+      </div>
+      
+    </div>
+  </div>
+  
+  
+    <!-- Modal for View Meeting Details -->
+  <div class="modal fade" id="editModal" role="dialog">
+		<div class="modal-dialog modal-xl">
+		
+			<!-- Modal content-->
+			<div class="modal-content">
+			
+				<div class="modal-header">
+					<h4 class="modal-title">Meeting Information</h4>
+				</div>
+        
+				<div class="modal-body">
+					<div class="panel-group col-sm-12" style="table-layout: fixed;">
+							<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h4>{{aMeetings.meeting_date}} {{aMeetings.workbook}} {{aMeetings.week_of}} 
+									<span class="pull-right" ng-if="aMeetings.Done == 'Cancelled'"><h6 style="color: red;">this is CANCELLED</h6></span>
+								</h4>
+							</div>
+							<div class="panel-body">
+								<label>Maging Mahusay sa Ministeryo </label>
+								<table class="table table-striped table-hover col-sm-12">
+									<thead ng-if="aMeetings.Main_Hall == 'Ok'">
+										<tr>
+											<th class="col-sm-4">Main Hall</th>
+											<th class="col-sm-4">Student</th>
+											<th class="col-sm-1">Lesson</th>
+											<th class="col-sm-3">Assistant</th>
+										</tr>
+									</thead>
+									<tbody ng-if="aMeetings.Main_Hall == 'Ok'">
+										<tr>
+											<td>Bible Reader </td>
+											<td>
+												{{aMeetings.BReader1.student}} 
+											</td>
+											<td>{{aMeetings.BReader1.lesson}}</td>
+										</tr>
+										<tr>
+											<td>{{aMeetings.MAssign1.assignment}}</td>
+											<td>
+												{{aMeetings.MAssign1.student}} 
+											</td>
+											<td>{{aMeetings.MAssign1.lesson}}</td>
+											<td>{{aMeetings.MAssign1.assistant}}</td>
+										</tr>
+										<tr>
+											<td>{{aMeetings.MAssign2.assignment}}</td>
+											<td>
+												{{aMeetings.MAssign2.student}} 
+											</td>
+											<td>{{aMeetings.MAssign2.lesson}}</td>
+											<td>{{aMeetings.MAssign2.assistant}}</td>
+										</tr>
+										<tr>
+											<td>{{aMeetings.MAssign3.assignment}}</td>
+											<td>
+												{{aMeetings.MAssign3.student}} 
+											</td>
+											<td>{{aMeetings.MAssign3.lesson}}</td>
+											<td>{{aMeetings.MAssign3.assistant}}</td>
+										</tr>
+									</tbody>
+									<thead ng-if="aMeetings.Second_Hall == 'Ok'">
+										<tr>
+											<th>Second Hall</th>
+											<th></th>
+											<th></th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody ng-if="aMeetings.Second_Hall == 'Ok'">
+										<tr>
+											<td>Bible Reader </td>
+											<td>
+												{{aMeetings.BReader2.student}} 
+											</td>
+											<td>{{aMeetings.BReader2.lesson}}</td>
+										</tr>
+										<tr>
+											<td>{{aMeetings.SAssign1.assignment}}</td>
+											<td>
+												{{aMeetings.SAssign1.student}} 
+											</td>
+											<td>{{aMeetings.SAssign1.lesson}}</td>
+											<td>{{aMeetings.SAssign1.assistant}}</td>
+										</tr>
+										<tr>
+											<td>{{aMeetings.SAssign2.assignment}}</td>
+											<td>
+												{{aMeetings.SAssign2.student}} 
+											</td>
+											<td>{{aMeetings.SAssign2.lesson}}</td>
+											<td>{{aMeetings.SAssign2.assistant}}</td>
+										</tr>
+										<tr>
+											<td>{{aMeetings.SAssign3.assignment}}</td>
+											<td>
+												{{aMeetings.SAssign3.student}} 
+											</td>
+											<td>{{aMeetings.SAssign3.lesson}}</td>
+											<td>{{aMeetings.SAssign3.assistant}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="panel-footer">
+							</div>
+							</div>
+						</div>
+				</div>
+				<div class="modal-footer"> 
+					<button class = "btn btn-warning" ng-if="aMeetings.Done != 'Cancelled'" ng-click="vm.updateMeeting()">Cancel</button>
+					<button type="button" class="btn btn-danger" ng-click="vm.restart()" data-dismiss="modal">Close</button>
+					<br>
+				</div>
+			</div>
+      
+		</div>
+  </div>
+</div>
+
+<div class="panel" ng-hide = "loading">
+	<div class="row">
+		<div class="col-sm-4">
+			<br>
+			<button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#myModal" ng-click="modifyDropdown(); declareSelected()">New Schedule</button>		      
+		</div>
+		<div class="col-sm-3">
+			<label for="search">Search</label>
+			<input id="search" type="text" ng-model="search" class="form-control">           
+		</div>
+		<div class="col-sm-3">
+			<label for="pageSize">Items per page</label>
+			<input id="pageSize" type="number" ng-model="pageSize" class="form-control" min="1" max={{vm.user.length}}> 
+		</div> 
+		<div class="col-sm-2"></div>
+	</div>
+	<div class="row">
+		<br/>
+	</div>
+</div>
+<div class="panel" ng-hide = "loading">
+	<table class="table table-striped table-condensed table-hover">
+		<thread>
+			<tr>
+				<th ng-click='sortColumn("meeting_date")' ng-class='setWidth("meeting_date") + " " + sortClass("meeting_date")'>Meeting Date</th>
+				<th ng-click='sortColumn("week_of")' ng-class='setWidth("week_of") + " " + sortClass("week_of")'>Week Of</th>
+				<th ng-click='sortColumn("workbook")' ng-class='setWidth("workbook") + " " + sortClass("workbook")'>Workbook</th>
+				<th ng-click='sortColumn("Done")' ng-class='setWidth("Done") + " " + sortClass("Done")'>Done</th>
+				<th >Action</th>
+			</tr>
+		</thread>
+		<tbody>
+			<tr ng-repeat="u in vm.meeting | orderObjectBy : column : reverse | filter : search | pagination: (currentPage - 1) * pageSize | limitTo: pageSize ">
+				<!-- <td class="cutOverflow" ng-repeat="field in fields">{{u[field.name]}}</td> -->
+				<td class="cutOverflow">{{u.meeting_date}}</td>
+				<td class="cutOverflow">{{u.week_of}}</td>
+				<td class="cutOverflow">{{u.workbook}}</td>
+				<td class="cutOverflow">{{u.Done}}</td>
+				<td>
+					<a><i class="fa fa-list-alt" aria-hidden="true" data-toggle = "modal" data-target = "#editModal" ng-click="editMeeting(u._id); declareSelected()" data-toggle="tooltip" title="View Details"></i><a>
+					|
+					<a><i class="fa fa-trash" aria-hidden="true" ng-click="vm.deleteMeeting(u._id)" data-toggle="tooltip" title="Delete"></i></a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<ul uib-pagination total-items="userLength" ng-model="currentPage" items-per-page="pageSize" boundary-links="true" max-size="4" force-ellipses="true"></ul>
+
+</div>
+
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>-->

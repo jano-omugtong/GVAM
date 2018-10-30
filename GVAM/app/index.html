@@ -29,14 +29,15 @@
                     <ul class="nav navbar-nav">
                     <!--    <li ng-class="{active: activeTab === 'home'}"><a ui-sref="home"><span class="glyphicon glyphicon-home"></span> Home</a></li> -->
                         <!--added by jeremy -->
-                        <li ng-class="{active: activeTab === 'schedule'}" ng-show="isAdmin"><a ui-sref="schedule"><span class="glyphicon glyphicon-list-alt"></span> Schedule</a></li>  
-                        <li ng-class="{active: activeTab === 'manageUsers'}" ng-show="isAdmin"><a ui-sref="manageUsers"><span class="glyphicon glyphicon-tasks"></span> Publishers</a></li>   
-                        <li ng-class="{active: activeTab === 'manageRotations'}" ng-show="isAdmin"><a ui-sref="manageRotations"><span class="glyphicon glyphicon-hdd"></span> Rotations</a></li>
+                        <!-- <li ng-class="{active: activeTab === 'schedule'}" ng-show="isAdmin"><a ui-sref="schedule"><span class="glyphicon glyphicon-list-alt"></span> Schedule</a></li>   -->
+                        <li ng-class="{active: activeTab === 'manageMeetings'}" ng-show="isAdmin"><a ui-sref="manageMeetings"><span class="glyphicon glyphicon-list-alt"></span> Meetings</a></li>
+                        <li ng-class="{active: activeTab === 'manageUsers'}" ng-show="isAdmin"><a ui-sref="manageUsers"><span class="fa fa-address-card"></span> Publishers</a></li>   
+                        <!-- <li ng-class="{active: activeTab === 'manageRotations'}" ng-show="isAdmin"><a ui-sref="manageRotations"><span class="glyphicon glyphicon-hdd"></span> Rotations</a></li> -->                        
 						<li ng-class="{active: activeTab === 'fields'}" ng-show="isAdmin"><a ui-sref="fields"><span class="glyphicon glyphicon-th-list"></span> Manage Fields</a></li>                       
                     </ul>
                     
                     <ul class="nav navbar-nav navbar-right">
-                        <li ng-show="greet" class="noselect navbar-text hidden-xs">Hi {{fName}}!</li>
+                        <li ng-show="greet" class="noselect navbar-text hidden-xs">Hi {{uName}}!</li>
                     <!--    <li ng-class="{active: activeTab === 'account'}"><a style="padding-top: 10px;" class="a50px" ui-sref="account"><div class="avatar-circle" ng-style="bgColor"><span class="initials noselect" data-toggle="tooltip" title="View Account">{{initials}}</div></a></li> -->
 						<li class = "dropdown"><a style="padding-top: 10px; padding-right:25px" class="a50px dropdown-toggle" data-toggle = "dropdown" href = "#">
 
@@ -151,6 +152,9 @@
 	
     <script src="Rotation/index.controller.js"></script>
     <script src="app-services/rotation.service.js"></script> 
+
+    <script src="meeting/index.controller.js"></script>
+    <script src="app-services/meeting.service.js"></script> 
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>	
     

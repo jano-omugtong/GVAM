@@ -1,5 +1,5 @@
 /*
-    Name: Users Controller
+    Name: Meetings Controller
     Date Created: 01/03/2018
     Author(s): Sanchez, Macku
                Flamiano, Glenn  
@@ -10,7 +10,7 @@
  
     angular
         .module('app')
-        .controller('ManageUsers.IndexController', Controller)
+        .controller('ManageMeetings.IndexController', Controller)
 
         /*
             Function name: Object filter
@@ -49,10 +49,10 @@
             };
         });
  
-    function Controller(UserService, $scope, FlashService, FieldsService, socket) {
+    function Controller(MeetingService, $scope, FlashService, FieldsService, UserService, socket, $filter) {
         var vm = this;
  
-        vm.user = [];
+        vm.meeting = [];
 		
 		$scope.loading = true;
         $scope.confirmPassword = {};
@@ -73,16 +73,14 @@
             return size;
         };
 
-        // initialize pages of user list
+        // initialize pages of meeting list
         $scope.currentPage = 1;
         $scope.pageSize = 10;
 
-        // Scope for users data
-        $scope.aUsers = {};
-        $scope.aUsers.password = "";
+        // Scope for meetings data
+        $scope.aMeetings = {};
+        $scope.aMeetings.password = "";
 
-        $scope.btnchc = "Edit";
-        $scope.shw = false;
 
         /*
             Function name: Reset Flash Messages
@@ -101,10 +99,10 @@
 
         // Table sort functions
         // column to sort
-        $scope.column = 'username';
+        $scope.column = 'meeting_date';
 
         // sort ordering (Ascending or Descending). Set true for desending
-        $scope.reverse = false; 
+        $scope.reverse = true; 
 
         /*
             Function name: Sort Table Columns
@@ -129,7 +127,7 @@
             Function name: Sort Class
             Author(s): Flamiano, Glenn
             Date Modified: December 2018
-            Description: To change column sort arrow UI when user clicks the column
+            Description: To change column sort arrow UI when meeting clicks the column
             Parameter(s): column
             Return: none
         */
@@ -165,17 +163,17 @@
         };
 
         /*
-            Function name: Reset user scope
+            Function name: Reset meeting scope
             Author(s): Flamiano, Glenn
             Date Modified: January 2018
-            Description: To reinitialize the $scope.AUsers variable used for CRUD
+            Description: To reinitialize the $scope.AMeetings variable used for CRUD
             Parameter(s): none
             Return: none
         */
-        function resetAUsers () {
-            $scope.aUsers = {};
-            $scope.aUsers.email = "";
-            $scope.aUsers.password = "";
+        function resetAMeetings () {
+            $scope.aMeetings = {};
+            $scope.aMeetings.email = "";
+            $scope.aMeetings.password = "";
             selected = [];
             $scope.confirmPassword = {};
 
@@ -189,7 +187,7 @@
         }
  
         // get realtime changes
-        socket.on('userChange', function(){
+        socket.on('meetingChange', function(){
             initController();
         });
 
@@ -199,16 +197,16 @@
             Function name: Initialize Controller
             Author(s): Flamiano, Glenn
             Date Modified: December 2018
-            Description: Retrieves all user data from users collection in mongoDB
+            Description: Retrieves all meeting data from meetings collection in mongoDB
             Parameter(s): none
             Return: none
         */
         function initController() {
-            // get current user
-            UserService.GetAll().then(function (user) {
-                vm.user = user;
-                $scope.allUsers = user;
-                $scope.userLength = Object.size(user);
+            // get current meeting
+            MeetingService.getAllMeetings().then(function (meeting) {
+                vm.meeting = meeting;
+                $scope.allMeetings = meeting;
+                $scope.meetingLength = Object.size(meeting);
             }).finally(function() {
 				$scope.loading = false;
 			});
@@ -216,13 +214,13 @@
 
         $scope.id = "";
         $scope.fields = [];
-        $scope.name = 'user';
+        $scope.name = 'meeting';
 		
         /*
-            Function name: Get all user fields 
+            Function name: Get all meeting fields 
             Author(s):
             Date Modified: January 2018
-            Description: Retrieves fields array from user document from fields collection in mongoDB
+            Description: Retrieves fields array from meeting document from fields collection in mongoDB
             Parameter(s): none
             Return: none
         */
@@ -239,25 +237,25 @@
                 alert(err.msg_error);
             });
         };
-        
-        getAllFields();
 
-        $scope.getAllByGender = function(gender){
-            $scope.loading = true;
-            UserService.GetAllByGender(gender).then(function(response){
-                vm.user = response;
-                $scope.allUsers = response;
-                $scope.userLength = Object.size(response);
-            }).catch(function(err){
-                alert(err.msg_error);
+        vm.user = [];
+        function getAllUsers() {
+            UserService.GetAll().then(function (user) {
+                $scope.allUsers = user;
+                $scope.userLength = Object.size(user);
+                for (var i = 0, j= 0; i<$scope.userLength;i++){
+                    if (user[i].username != "admin")
+                        if (user[i].service_status != 'W/Restrictions' && user[i].service_status != 'Pending' && user[i].service_status != 'Inactive')
+                            vm.user[j++] = user[i];
+                }
+                vm.user = $filter('orderBy')(vm.user, 'username');
             }).finally(function() {
 				$scope.loading = false;
 			});
-        };
-
-        $scope.getAll = function(){
-            initController();
         }
+        
+        getAllFields();
+        getAllUsers();
 
         /*
             Function name: Show different field types
@@ -362,7 +360,7 @@
             Function name: Format date
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/25
-            Description: To iformat a date and to be inserted to $scope.aUsers
+            Description: To iformat a date and to be inserted to $scope.aMeetings
             Parameter(s): none
             Return: formatted date
         */
@@ -379,15 +377,15 @@
         }
 
         /*
-            Function name: Insert formatted date to $scope.aUsers
+            Function name: Insert formatted date to $scope.aMeetings
             Author(s): Flamiano, Glenn
             Date Modified: 2018/01/25
-            Description: To format a date and to be inserted to $scope.aUsers
+            Description: To format a date and to be inserted to $scope.aMeetings
             Parameter(s): none
             Return: none
         */
-        $scope.pushDateToAUsers = function(fieldName, inputDate) {
-            $scope.aUsers[fieldName] = formatDate(inputDate);
+        $scope.pushDateToAMeetings = function(fieldName, inputDate) {
+            $scope.aMeetings[fieldName] = formatDate(inputDate);
         };
 
         /*
@@ -527,28 +525,28 @@
             Descrption: initialize dropdown values if they are required
         */
         $scope.modifyDropdown = function(){
-            //this is to initialize dropdowns that were added after adding users
+            //this is to initialize dropdowns that were added after adding meetings
             //loop the fields to initialize value of a dropdown to the first item of its options if it is undefined
             angular.forEach($scope.fields, function(value, key){
                 //initialize if the dropdown is required
                 if(value.type == 'dropdown' && value.required){
-                    $scope.aUsers[value.name] = value.options[0];
+                    $scope.aMeetings[value.name] = value.options[0];
                 }
             });
         };
 
         /*
-            Function name: Insert radio button value to $scope.aUsers
+            Function name: Insert radio button value to $scope.aMeetings
             Author(s): Flamiano, Glenn
             Date Modified: February 2018
-            Description: To insert radio button value to $scope.aUsers, it is called
+            Description: To insert radio button value to $scope.aMeetings, it is called
                 when radio button is checked
             Parameter(s): option, fieldName
             Return: none
         */
         $scope.putToModel = function(option, fieldName){
             //console.log(option);
-            $scope.aUsers[fieldName] = option;
+            $scope.aMeetings[fieldName] = option;
         }
 
         /*
@@ -567,7 +565,7 @@
                 
                 //validation for password
                 if(currentField.type == 'password'){
-                    if($scope.aUsers[currentField.name] != $scope.confirmPassword[currentField.name]){
+                    if($scope.aMeetings[currentField.name] != $scope.confirmPassword[currentField.name]){
                         allValid = false;
                     }
                 }
@@ -585,8 +583,8 @@
         */
         $scope.isChecked = function(field_name, option, type){
             if(type == 'checkbox'){
-                if($scope.aUsers[field_name] == undefined) $scope.aUsers[field_name] = [];
-                var isChecked = ($scope.aUsers[field_name].indexOf(option) != -1) ? true : false;
+                if($scope.aMeetings[field_name] == undefined) $scope.aMeetings[field_name] = [];
+                var isChecked = ($scope.aMeetings[field_name].indexOf(option) != -1) ? true : false;
                 return isChecked;
             }
         };
@@ -601,8 +599,8 @@
         */
         $scope.isRadioSelected = function(field_name, option, type){
             if(type == 'radio'){
-                if($scope.aUsers[field_name] == undefined) $scope.aUsers[field_name] = [];
-                var isChecked = ($scope.aUsers[field_name].indexOf(option) != -1) ? true : false;
+                if($scope.aMeetings[field_name] == undefined) $scope.aMeetings[field_name] = [];
+                var isChecked = ($scope.aMeetings[field_name].indexOf(option) != -1) ? true : false;
                 return isChecked;
             }
         };
@@ -615,14 +613,14 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.pushToAUsers = function(fieldName, option){
+        $scope.pushToAMeetings = function(fieldName, option){
             var checkedOption = document.getElementsByName(option);
             if(checkedOption[0].checked){
                 selected['checkBoxAdd '+fieldName].push(option);
             }else{
                 selected['checkBoxAdd '+fieldName].remove(option);
             }
-            $scope.aUsers[fieldName] = selected['checkBoxAdd '+fieldName];
+            $scope.aMeetings[fieldName] = selected['checkBoxAdd '+fieldName];
         };
 
         /*
@@ -633,7 +631,7 @@
             Parameter(s): field.name, checkbox element
             Return: none
         */
-        $scope.pushEditToAUsers = function(fieldName, option){
+        $scope.pushEditToAMeetings = function(fieldName, option){
 
             var checkedOption = document.getElementsByName('edit '+option);
             //console.log(option+' field is '+checkedOption.checked);
@@ -643,17 +641,17 @@
                 selected['checkBoxAdd '+fieldName].remove(option);
             }
 
-            $scope.aUsers[fieldName] = selected['checkBoxAdd '+fieldName];
+            $scope.aMeetings[fieldName] = selected['checkBoxAdd '+fieldName];
         };
 
 
         /*
-            Function name: Add User Function
+            Function name: Add Meeting Function
             Author(s): Sanchez, Macku
             Date Modified: January 2018
-            Description: Adds New User and Assigns a Temporary Password to the New User
+            Description: Adds New Meeting and Assigns a Temporary Password to the New Meeting
         */
-        $scope.addUser = function(){
+        $scope.addMeeting = function(){
             
             $scope.showAddFlash = true;
 
@@ -664,8 +662,8 @@
             for(var h in $scope.fields){
                 if($scope.fields[h].required==true){
                     requiredTextField++;
-                    if($scope.aUsers[$scope.fields[h].name]===undefined){
-                        FlashService.Error("Please input all the required the fields");
+                    if($scope.aMeetings[$scope.fields[h].name]===undefined){
+                        FlashService.Error("Please input all the required fields");
                         break;
                     }else{
                         forDataBase++;
@@ -682,21 +680,168 @@
                 FlashService.Error("Confirm password/s does not match");
             }else{
                 if(forDataBase===requiredTextField){
+                    console.log($scope.aMeetings);
+                    console.log("hi");
                     $scope.showAddFlash = false;
-                    UserService.Insert($scope.aUsers)
+                    MeetingService.addMeeting($scope.aMeetings)
                         .then(function () {
+                            console.log("hello");
+                            // user update start
+                            for (var i = 0; i<(vm.user.length - 1);i++){
+                                angular.forEach($scope.aMeetings, function(value, key){
+                                    if (key == "BReader1"){
+                                        angular.forEach(value, function(value2, key2){
+                                            if (key2 == "student"){
+                                                if(vm.user[i].username == value2){
+                                                    console.log(vm.user[i].username);
+                                                    vm.user[i].rotation_done = "Yes";
+                                                    vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                    vm.user[i].scheduled_assign = $scope.aMeetings.meeting_date;
+                                                    UserService.Update(vm.user[i]);
+                                                }
+                                            }
+                                        })
+                                    }
+                                    if (key == "MAssign1"){
+                                        angular.forEach(value, function(value2, key2){
+                                            if (key2 == "student"){
+                                                if(vm.user[i].username == value2){
+                                                    vm.user[i].rotation_done = "Yes";
+                                                    vm.user[i].last_assistant = value.assistant;
+                                                    vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                    vm.user[i].scheduled_assign = $scope.aMeetings.meeting_date;
+                                                    UserService.Update(vm.user[i]);
+                                                }
+                                            }
+                                            if (key2 == "assistant"){
+                                                if(vm.user[i].username == value2){
+                                                    vm.user[i].assistant_sched = $scope.aMeetings.meeting_date;
+                                                    UserService.Update(vm.user[i]);
+                                                }
+                                            }
+                                        })
+                                    }
+                                    if (key == "MAssign2"){
+                                            angular.forEach(value, function(value2, key2){
+                                                if (key2 == "student"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].rotation_done = "Yes";
+                                                        vm.user[i].last_assistant = value.assistant;
+                                                        vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                        vm.user[i].scheduled_assign = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                                if (key2 == "assistant"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].assistant_sched = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    if (key == "MAssign3"){
+                                            angular.forEach(value, function(value2, key2){
+                                                if (key2 == "student"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].rotation_done = "Yes";
+                                                        vm.user[i].last_assistant = value.assistant;
+                                                        vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                        vm.user[i].scheduled_assign = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                                if (key2 == "assistant"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].assistant_sched = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    if (key == "BReader2"){
+                                            angular.forEach(value, function(value2, key2){
+                                                if (key2 == "student"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].rotation_done = "Yes";
+                                                        vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                        vm.user[i].scheduled_assign = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    if (key == "SAssign1"){
+                                            angular.forEach(value, function(value2, key2){
+                                                if (key2 == "student"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].rotation_done = "Yes";
+                                                        vm.user[i].last_assistant = value.assistant;
+                                                        vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                        vm.user[i].scheduled_assign = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                                if (key2 == "assistant"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].assistant_sched = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    if (key == "SAssign2"){
+                                            angular.forEach(value, function(value2, key2){
+                                                if (key2 == "student"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].rotation_done = "Yes";
+                                                        vm.user[i].last_assistant = value.assistant;
+                                                        vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                        vm.user[i].scheduled_assign = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                                if (key2 == "assistant"){
+                                                    if(vm.user[i].username == value2){
+                                                        vm.user[i].assistant_sched = $scope.aMeetings.meeting_date;
+                                                        UserService.Update(vm.user[i]);
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    if (key == "SAssign3"){
+                                        angular.forEach(value, function(value2, key2){
+                                            if (key2 == "student"){
+                                                if(vm.user[i].username == value2){
+                                                    vm.user[i].rotation_done = "Yes";
+                                                    vm.user[i].last_assistant = value.assistant;
+                                                    vm.user[i].last_assign = vm.user[i].scheduled_assign;
+                                                    vm.user[i].scheduled_assign = $scope.aMeetings.meeting_date;
+                                                    UserService.Update(vm.user[i]);
+                                                }
+                                            }
+                                            if (key2 == "assistant"){
+                                                if(vm.user[i].username == value2){
+                                                    vm.user[i].assistant_sched = $scope.aMeetings.meeting_date;
+                                                    UserService.Update(vm.user[i]);
+                                                }
+                                            }
+                                        })
+                                    }
+                                })
+                                
+                            }
+                            // user update end
                                 initController();
                                 $('#myModal').modal('hide');
-                                FlashService.Success('User Added');
+                                FlashService.Success('Meeting Added');
                                 resetModalFlash();
-                                resetAUsers();
+                                resetAMeetings();
                             }).catch(function (error) {
                                 $scope.showAddFlash = true;
                                 FlashService.Error(error);
                             });
-                            initController();
-                             
-                            
+                            initController();    
                 }
             }
         };
@@ -719,96 +864,103 @@
         }
 
         /*
-            Function name: edit User
+            Function name: edit Meeting
             Author(s):
             Date Modified: January 2018
-            Description: When user clicks edit on the table, the selected row $scope is copied to $scope.aUsers
+            Description: When meeting clicks edit on the table, the selected row $scope is copied to $scope.aMeetings
             Parameter(s): index
             Return: none
         */
-        $scope.editUser = function(index){
-            $scope.btnchc = "Edit";
-            $scope.shw = false;
-            $scope.aUsers = angular.copy(filterIndexById($scope.allUsers, index));
+        $scope.editMeeting = function(index){
+            console.log($scope.allMeetings);
+            console.log($scope.aMeetings);
+            $scope.aMeetings = angular.copy(filterIndexById($scope.allMeetings, index));
+            console.log($scope.aMeetings);
         };
 		
 		vm.cancelEdit = function() {
 			
-			$scope.aUsers = {};			
+			$scope.aMeetings = {};			
 			initController();
 		}
 		
 		/*
-            Function name: Update User Function
+            Function name: Update Meeting Function
             Author(s): Sanchez, Macku
             Date Modified: January 2018
-            Description: Update User
+            Description: Update Meeting
         */
-		vm.updateUser = function() {
-            $scope.aUsers.password="qwe";
-            var requiredTextField=0;
-            var forDataBase=0;
-
-            $scope.showEditFlash = true;
-            for(var h in $scope.fields){
-                if($scope.fields[h].required==true){
-                    requiredTextField++;
-                    if($scope.aUsers[$scope.fields[h].name]===undefined){
-                        FlashService.Error("Please input all the required the fields");
-                    }else{
-                        forDataBase++;
+		vm.updateMeeting = function() {
+            for (var i = 0; i<(vm.user.length - 1);i++){
+                if ($scope.aMeetings.Main_Hall == 'Ok'){
+                    if(vm.user[i].username == $scope.aMeetings.BReader1.student){
+                        vm.user[i].rotation_done = 'No';
+                        UserService.Update(vm.user[i]);
+                    }
+                    if(vm.user[i].username == $scope.aMeetings.MAssign1.student){
+                        vm.user[i].rotation_done = 'No';
+                        UserService.Update(vm.user[i]);
+                    }
+                    if(vm.user[i].username == $scope.aMeetings.MAssign2.student){
+                        vm.user[i].rotation_done = 'No';
+                        UserService.Update(vm.user[i]);
+                    }
+                    if(vm.user[i].username == $scope.aMeetings.MAssign3.student){
+                        vm.user[i].rotation_done = 'No';
+                        UserService.Update(vm.user[i]);
+                    }
+                }
+                if ($scope.aMeetings.Second_Hall == 'Ok'){
+                    if(vm.user[i].username == $scope.aMeetings.BReader2.student){
+                        vm.user[i].rotation_done = 'No';
+                        UserService.Update(vm.user[i]);
+                    }
+                    if(vm.user[i].username == $scope.aMeetings.SAssign1.student){
+                        vm.user[i].rotation_done = 'No';
+                        UserService.Update(vm.user[i]);
+                    }
+                    if(vm.user[i].username == $scope.aMeetings.SAssign2.student){
+                        vm.user[i].rotation_done = 'No';
+                        UserService.Update(vm.user[i]);
+                    }
+                    if(vm.user[i].username == $scope.aMeetings.SAssign3.student){
+                        vm.user[i].rotation_done = 'No';
+                        UserService.Update(vm.user[i]);
                     }
                 }
             }
-
-            if(!checkEmails()){
-                FlashService.Error("Please Input valid email");
-            }else if(!checkNumbers()){
-                FlashService.Error("Please Input numbers only to number fields");
-            }else if(!checkPasswords()){
-                FlashService.Error("Passwords should contain lowercase, uppercase, numbers and at least 8 characters");
-            }else if(!checkConfirmPasswords()){
-                FlashService.Error("Confirm password/s does not match");
-            }else{
-                if(forDataBase===requiredTextField){
-                    delete $scope.aUsers.password;
-                    UserService.Update($scope.aUsers)
-                        .then(function () {
-                            initController();
-                            $scope.btnchc = "Edit";
-                            $scope.shw = false;
-                            $('#editModal').modal('hide');
-                            FlashService.Success('User updated');
-                        }).catch(function (error) {
-                            FlashService.Error(error);
-                        }); 
-                        $scope.btnchc = "Edit";
-                        $scope.shw = false;
-                        resetAUsers();
-                        resetModalFlash();
-                }
-            }
+            $scope.aMeetings.Done = 'Cancelled';
+            MeetingService.updateMeeting($scope.aMeetings)
+                .then(function () {
+                    initController();
+                    $('#editModal').modal('hide');
+                    FlashService.Success('Meeting Cancelled');
+                }).catch(function (error) {
+                    FlashService.Error(error);
+                }); 
+                resetAMeetings();
+                resetModalFlash();
         }		
 		
 		/*
-            Function name: Delete User Function
+            Function name: Delete Meeting Function
             Author(s): Sanchez, Macku
             Date Modified: January 2018
-            Description: Delet eUser
+            Description: Delet eMeeting
         */
-		vm.deleteUser = function(index) {
+		vm.deleteMeeting = function(index) {
 			
 			
-			 var toDel = filterIndexById($scope.allUsers, index);
+			 var toDel = filterIndexById($scope.allMeetings, index);
         
 
-            if (confirm("Are you sure to delete this user?")){
+            if (confirm("Are you sure to delete this meeting?")){
 				
-             UserService.Delete(toDel._id)
+             MeetingService.Delete(toDel._id)
                  .then(function () {
 					resetModalFlash();
-                    FlashService.Success('User Deleted');
-                    socket.emit('userChange');
+                    FlashService.Success('Meeting Deleted');
+                    socket.emit('meetingChange');
 					 
                 })
                 .catch(function (error) {
@@ -817,31 +969,6 @@
             }
         }
 
-        // vm.updateRotationDone = function(){
-        //     UserService.UpdateAll()
-        //         .then(function () {
-        //             FlashService.Success('Rotation Reset');
-        //             socket.emit('userChange');
-                    
-        //         })
-        //         .catch(function (error) {
-        //             FlashService.Error(error);
-        //         });
-        // }
-
-        vm.rotationDone = function(index){
-            UserService.GetById(index).then(function(user){
-                user.rotation_done = 'No';
-                UserService.Update(user).then(function(){
-                    FlashService.Success("Rotation Refreshed");
-                }).catch(function (error) {
-                    FlashService.Error(error);
-                });
-                socket.emit('userChange');
-            }).catch(function (error) {
-                FlashService.Error(error);
-            });
-        }
 
         /*
             Name: enable edit
@@ -852,23 +979,19 @@
             Descrption: set the values of certain scope variables. also initialize dropdown values if they are required
         */
         vm.enableEditing = function() {
-            $scope.btnchc = "Save";
-            $scope.shw = true;
             angular.forEach($scope.fields, function(value, key){
                 //initialize if the dropdown is required
-                //console.log($scope.aUsers[value.name])
+                //console.log($scope.aMeetings[value.name])
                 //when editing, non existing property may be undefined or ''
-                if(value.type == 'dropdown' && value.required && ($scope.aUsers[value.name] == undefined || $scope.aUsers[value.name] == '')){
-                    $scope.aUsers[value.name] = value.options[0];
+                if(value.type == 'dropdown' && value.required && ($scope.aMeetings[value.name] == undefined || $scope.aMeetings[value.name] == '')){
+                    $scope.aMeetings[value.name] = value.options[0];
                 }
             });
         }
 
          vm.restart = function() {
-            $scope.btnchc = "Edit";
-            $scope.shw = false;
             initController();
-            resetAUsers();
+            resetAMeetings();
             resetModalFlash();
             $scope.showMainFlash = false;
         }

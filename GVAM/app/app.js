@@ -52,10 +52,18 @@
             //Added by Glenn
             .state('manageRotations', {
                 url: '/manageRotations',
-                templateUrl: 'rotation/index.html',
+                templateUrl: 'Rotation/index.html',
                 controller: 'ManageRotations.IndexController',
                 controllerAs: 'vm',
                 data: { activeTab: 'manageRotations' }
+            })
+
+            .state('manageMeetings', {
+                url: '/manageMeetings',
+                templateUrl: 'meeting/index.html',
+                controller: 'ManageMeetings.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'manageMeetings' }
             })
             
             //added by jeremy
@@ -198,7 +206,7 @@
             UserService.GetCurrent().then(function (user) {
                 var str = user._id;
                 $rootScope.lagot = false;
-                $rootScope.fName = user.firstName;
+                $rootScope.uName = user.firstName + " " + user.lastName[0];
                 if (user.assign_missed > 2){
                     $rootScope.lagot = true;
                 }
