@@ -32,6 +32,7 @@
                         <!-- <li ng-class="{active: activeTab === 'schedule'}" ng-show="isAdmin"><a ui-sref="schedule"><span class="glyphicon glyphicon-list-alt"></span> Schedule</a></li>   -->
                         <li ng-class="{active: activeTab === 'manageMeetings'}" ng-show="isAdmin"><a ui-sref="manageMeetings"><span class="glyphicon glyphicon-list-alt"></span> Meetings</a></li>
                         <li ng-class="{active: activeTab === 'manageUsers'}" ng-show="isAdmin"><a ui-sref="manageUsers"><span class="fa fa-address-card"></span> Publishers</a></li>   
+                        <li ng-class="{active: activeTab === 'manageGroups'}" ng-show="isAdmin"><a ui-sref="manageGroups"><span class="fa fa-users"></span> Groups</a></li>   
                         <!-- <li ng-class="{active: activeTab === 'manageRotations'}" ng-show="isAdmin"><a ui-sref="manageRotations"><span class="glyphicon glyphicon-hdd"></span> Rotations</a></li> -->                        
 						<li ng-class="{active: activeTab === 'fields'}" ng-show="isAdmin"><a ui-sref="fields"><span class="glyphicon glyphicon-th-list"></span> Manage Fields</a></li>                       
                     </ul>
@@ -155,6 +156,8 @@
 
     <script src="meeting/index.controller.js"></script>
     <script src="app-services/meeting.service.js"></script> 
+
+    <script src="groups/index.controller.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>	
     

@@ -147,6 +147,11 @@ p:hover {
 	color : red;
   }
 
+.font-weight-bold {
+  font-weight: bold;
+  font-style: italic;
+}
+
 
   @media (min-width: 768px) {
 	.modal-xl {

@@ -214,6 +214,7 @@
 
         $scope.id = "";
         $scope.fields = [];
+        $scope.fieldsUsr = [];
         $scope.name = 'meeting';
 		
         /*
@@ -225,7 +226,33 @@
             Return: none
         */
         function getAllFields(){
-			
+
+            FieldsService.GetAll("user").then(function(response){
+                
+                var fieldsLength = Object.size(response.fields);
+                for (var i = 0, j = 0; i < fieldsLength; i++){
+                    if (response.fields[i].type == "dropdown"){
+                        if (response.fields[i].name != "role"){
+                            if (response.fields[i].name == "rotation_done"){}
+                            else
+                                $scope.fieldsUsr[j++] = response.fields[i];
+                        }
+                    }
+                }
+			}).catch(function(err){
+				alert(err.msg_error);
+            });
+
+            FieldsService.GetAll("meeting").then(function(response){
+				$scope.fields = response.fields;
+                $scope.id = response._id;
+				$scope.fieldsLength = Object.size(response.fields);
+								
+			}).catch(function(err){
+				alert(err.msg_error);
+            });
+            
+            /*
             FieldsService.GetAll($scope.name).then(function(response){
     
                $scope.fields = response.fields;
@@ -236,6 +263,7 @@
             }).catch(function(err){
                 alert(err.msg_error);
             });
+            */
         };
 
         vm.user = [];

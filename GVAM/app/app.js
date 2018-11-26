@@ -65,6 +65,14 @@
                 controllerAs: 'vm',
                 data: { activeTab: 'manageMeetings' }
             })
+
+            .state('manageGroups', {
+                url: '/manageGroups',
+                templateUrl: 'groups/index.html',
+                controller: 'ManageGroups.IndexController',
+                controllerAs: 'vm',
+                data: { activeTab: 'manageGroups' }
+            })
             
             //added by jeremy
             .state('schedule', {
