@@ -233,9 +233,9 @@
 </div>
 <div class="panel" ng-hide = "loading">
 	<ul class="nav nav-tabs">
-		<li class="nav active"><a ng-click="getAllByGender('M')" data-toggle="tab" href="#approved">ALL</a></li>
-		<li class="nav"><a ng-click="getAllByGender('M')" data-toggle="tab" href="#approved">MALE</a></li>
-		<li class="nav"><a ng-click="getAllByGender('F')" data-toggle="tab" href="#released">FEMALE</a></li>
+		<li class="nav active"><a ng-click="getAll()" data-toggle="tab" href="#sample">ALL</a></li>
+		<li class="nav"><a ng-click="getAllByGender('M')" data-toggle="tab" href="#sample">MALE</a></li>
+		<li class="nav"><a ng-click="getAllByGender('F')" data-toggle="tab" href="#sample">FEMALE</a></li>
 	</ul>
 	<table class="table table-striped table-condensed table-hover">
 		<thread>
@@ -244,6 +244,7 @@
 				<th ng-click='sortColumn("username")' ng-class='setWidth("username") + " " + sortClass("username")'>Username</th>
 				<th ng-click='sortColumn("firstName")' ng-class='setWidth("firstName") + " " + sortClass("firstName")'>First Name</th>
 				<th ng-click='sortColumn("lastName")' ng-class='setWidth("lastName") + " " + sortClass("lastName")'>Last Name</th>
+				<th ng-click='sortColumn("service_status")' ng-class='setWidth("service_status") + " " + sortClass("service_status")'>Service Status</th>
 				<th ng-click='sortColumn("rotation_done")' ng-class='setWidth("rotation_done") + " " + sortClass("rotation_done")'>Rotation</th>
 			</tr>
 		</thread>
@@ -253,6 +254,7 @@
 				<td class="cutOverflow">{{u.username}}   <span ng-if="u.assign_missed >= 3"><i class="fa fa-exclamation-circle" ></i></span></td>
 				<td class="cutOverflow">{{u.firstName}}</td>
 				<td class="cutOverflow">{{u.lastName}}</td>
+				<td class="cutOverflow">{{u.service_status}}</td>
 				<td class="cutOverflow"><a ng-if="u.rotation_done=='Yes'"><i class="fa fa-refresh" aria-hidden="true" ng-click="vm.rotationDone(u._id)" data-toggle="tooltip" title="Refresh"></i></a></td>
 				<td>
 					<a><i class="fa fa-list-alt" aria-hidden="true" data-toggle = "modal" data-target = "#editModal" ng-click="editUser(u._id); declareSelected()" data-toggle="tooltip" title="View Details"></i><a>

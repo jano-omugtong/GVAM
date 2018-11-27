@@ -104,7 +104,7 @@
 									<select name="1stStudent" data="{{field.type}}" ng-model="aMeetings.MAssign1.student" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
 										<option ng-show="readonly" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
-										<option ng-if="student[srchM1] == srchM1_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchM1] == srchM1_1 && student.rotation_done == 'No' && student.assign_missed != 3 && student.asAssistant != 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 								<div class="col-xs-2">
@@ -115,7 +115,7 @@
 									<label>Assistant </label>
 									<select name="1stStudentAsst" data="{{field.type}}" ng-model="aMeetings.MAssign1.assistant" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchMA1] == srchMA1_1 && aMeetings.MAssign1.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchMA1] == srchMA1_1 && aMeetings.MAssign1.student != student.username && student.asAssistant == 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 							</div>
@@ -144,6 +144,7 @@
 										<option ng-if="srchM1 == 'group_no'">4</option>
 										<option ng-if="srchM1 == 'group_no'">5</option>
 										<option ng-if="srchM1 == 'group_no'">6</option>
+										<option ng-if="srchM1 == 'group_no'">7</option>
 									</select>
 								</div>
 								<div class="col-xs-3"></div>
@@ -170,6 +171,7 @@
 										<option ng-if="srchMA1 == 'group_no'">4</option>
 										<option ng-if="srchMA1 == 'group_no'">5</option>
 										<option ng-if="srchMA1 == 'group_no'">6</option>
+										<option ng-if="srchMA1 == 'group_no'">7</option>
 									</select>
 								</div>
 							</div>
@@ -192,7 +194,7 @@
 									<label>2nd Student </label>
 									<select name="2ndStudent" data="{{field.type}}" ng-model="aMeetings.MAssign2.student" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchM2] == srchM2_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchM2] == srchM2_1 && student.rotation_done == 'No' && student.assign_missed != 3 && student.asAssistant != 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 								<div class="col-xs-2">
@@ -203,7 +205,7 @@
 									<label>Assistant </label>
 									<select name="2ndStudentAsst" data="{{field.type}}" ng-model="aMeetings.MAssign2.assistant" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchMA2] == srchMA2_1 && aMeetings.MAssign2.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchMA2] == srchMA2_1 && aMeetings.MAssign2.student != student.username && student.asAssistant == 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 							</div>
@@ -232,6 +234,7 @@
 										<option ng-if="srchM2 == 'group_no'">4</option>
 										<option ng-if="srchM2 == 'group_no'">5</option>
 										<option ng-if="srchM2 == 'group_no'">6</option>
+										<option ng-if="srchM2 == 'group_no'">7</option>
 									</select>
 								</div>
 								<div class="col-xs-3"></div>
@@ -258,6 +261,7 @@
 										<option ng-if="srchMA2 == 'group_no'">4</option>
 										<option ng-if="srchMA2 == 'group_no'">5</option>
 										<option ng-if="srchMA2 == 'group_no'">6</option>
+										<option ng-if="srchMA2 == 'group_no'">7</option>
 									</select>
 								</div>
 							</div>
@@ -280,7 +284,7 @@
 									<label>3rd Student </label>
 									<select name="3rdStudent" data="{{field.type}}" ng-model="aMeetings.MAssign3.student" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchM3] == srchM3_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchM3] == srchM3_1 && student.rotation_done == 'No' && student.assign_missed != 3 && student.asAssistant != 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 								<div class="col-xs-2">
@@ -291,7 +295,7 @@
 									<label>Assistant </label>
 									<select name="2ndStudentAsst" data="{{field.type}}" ng-model="aMeetings.MAssign3.assistant" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchMA3] == srchMA3_1 && aMeetings.MAssign3.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchMA3] == srchMA3_1 && aMeetings.MAssign3.student != student.username && student.asAssistant == 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 							</div>
@@ -320,6 +324,7 @@
 										<option ng-if="srchM3 == 'group_no'">4</option>
 										<option ng-if="srchM3 == 'group_no'">5</option>
 										<option ng-if="srchM3 == 'group_no'">6</option>
+										<option ng-if="srchM3 == 'group_no'">7</option>
 									</select>
 								</div>
 								<div class="col-xs-3"></div>
@@ -346,6 +351,7 @@
 										<option ng-if="srchMA3 == 'group_no'">4</option>
 										<option ng-if="srchMA3 == 'group_no'">5</option>
 										<option ng-if="srchMA3 == 'group_no'">6</option>
+										<option ng-if="srchMA3 == 'group_no'">7</option>
 									</select>
 								</div>
 							</div>
@@ -383,7 +389,7 @@
 									<label>1st Student </label>
 									<select name="1stStudent" data="{{field.type}}" ng-model="aMeetings.SAssign1.student" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchS1] == srchS1_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchS1] == srchS1_1 && student.rotation_done == 'No' && student.assign_missed != 3 && student.asAssistant != 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 								<div class="col-xs-2">
@@ -394,7 +400,7 @@
 									<label>Assistant </label>
 									<select name="1stStudentAsst" data="{{field.type}}" ng-model="aMeetings.SAssign1.assistant" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchSA1] == srchSA1_1 && aMeetings.SAssign1.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchSA1] == srchSA1_1 && aMeetings.SAssign1.student != student.username && student.asAssistant == 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 							</div>
@@ -423,6 +429,7 @@
 										<option ng-if="srchS1 == 'group_no'">4</option>
 										<option ng-if="srchS1 == 'group_no'">5</option>
 										<option ng-if="srchS1 == 'group_no'">6</option>
+										<option ng-if="srchS1 == 'group_no'">7</option>
 									</select>
 								</div>
 								<div class="col-xs-3"></div>
@@ -449,6 +456,7 @@
 										<option ng-if="srchSA1 == 'group_no'">4</option>
 										<option ng-if="srchSA1 == 'group_no'">5</option>
 										<option ng-if="srchSA1 == 'group_no'">6</option>
+										<option ng-if="srchSA1 == 'group_no'">7</option>
 									</select>
 								</div>
 							</div>
@@ -472,7 +480,7 @@
 									<label>2nd Student </label>
 									<select name="2ndStudent" data="{{field.type}}" ng-model="aMeetings.SAssign2.student" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchS2] == srchS2_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchS2] == srchS2_1 && student.rotation_done == 'No' && student.assign_missed != 3 && student.asAssistant != 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 								<div class="col-xs-2">
@@ -483,7 +491,7 @@
 									<label>Assistant </label>
 									<select name="2ndStudentAsst" data="{{field.type}}" ng-model="aMeetings.SAssign2.assistant" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchSA2] == srchSA2_1 && aMeetings.SAssign2.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchSA2] == srchSA2_1 && aMeetings.SAssign2.student != student.username && student.asAssistant == 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 							</div>
@@ -512,6 +520,7 @@
 										<option ng-if="srchS2 == 'group_no'">4</option>
 										<option ng-if="srchS2 == 'group_no'">5</option>
 										<option ng-if="srchS2 == 'group_no'">6</option>
+										<option ng-if="srchS2 == 'group_no'">7</option>
 									</select>
 								</div>
 								<div class="col-xs-3"></div>
@@ -538,6 +547,7 @@
 										<option ng-if="srchSA2 == 'group_no'">4</option>
 										<option ng-if="srchSA2 == 'group_no'">5</option>
 										<option ng-if="srchSA2 == 'group_no'">6</option>
+										<option ng-if="srchSA2 == 'group_no'">7</option>
 									</select>
 								</div>
 							</div>
@@ -561,7 +571,7 @@
 									<label>3rd Student </label>
 									<select name="3rdStudent" data="{{field.type}}" ng-model="aMeetings.SAssign3.student" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchS3] == srchS3_1 && student.rotation_done == 'No' && student.assign_missed != 3" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchS3] == srchS3_1 && student.rotation_done == 'No' && student.assign_missed != 3 && student.asAssistant != 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 								<div class="col-xs-2">
@@ -572,7 +582,7 @@
 									<label>Assistant </label>
 									<select name="2ndStudentAsst" data="{{field.type}}" ng-model="aMeetings.SAssign3.assistant" class="form-control">
 										<option value="" selected disabled hidden>Choose here</option>
-										<option ng-if="student[srchSA3] == srchSA3_1 && aMeetings.SAssign3.student != student.username" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
+										<option ng-if="student[srchSA3] == srchSA3_1 && aMeetings.SAssign3.student != student.username && student.asAssistant == 'Yes'" ng-repeat="student in vm.user track by $index">{{student.username}}</option>
 									</select>
 								</div>
 							</div>
@@ -601,6 +611,7 @@
 										<option ng-if="srchS3 == 'group_no'">4</option>
 										<option ng-if="srchS3 == 'group_no'">5</option>
 										<option ng-if="srchS3 == 'group_no'">6</option>
+										<option ng-if="srchS3 == 'group_no'">7</option>
 									</select>
 								</div>
 								<div class="col-xs-3"></div>
@@ -627,6 +638,7 @@
 										<option ng-if="srchSA3 == 'group_no'">4</option>
 										<option ng-if="srchSA3 == 'group_no'">5</option>
 										<option ng-if="srchSA3 == 'group_no'">6</option>
+										<option ng-if="srchSA3 == 'group_no'">7</option>
 									</select>
 								</div>
 							</div>
