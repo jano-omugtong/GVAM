@@ -83,6 +83,7 @@
 
         $scope.btnchc = "Edit";
         $scope.shw = false;
+        $scope.genderTab = "all";
 
         /*
             Function name: Reset Flash Messages
@@ -190,7 +191,7 @@
  
         // get realtime changes
         socket.on('userChange', function(){
-            initController();
+            getAll($scope.genderTab);
         });
 
         initController();
@@ -206,12 +207,13 @@
         function initController() {
             // get current user
             UserService.GetAll().then(function (user) {
+                $scope.genderTab = 'all';
                 vm.user = user;
                 $scope.allUsers = user;
                 $scope.userLength = Object.size(user);
             }).finally(function() {
-				$scope.loading = false;
-			});
+                $scope.loading = false;
+            });
         }
 
         $scope.id = "";
@@ -242,9 +244,10 @@
         
         getAllFields();
 
-        $scope.getAllByGender = function(gender){
+        function getAllByGender(gender){
             $scope.loading = true;
             UserService.GetAllByGender(gender).then(function(response){
+                $scope.genderTab = gender;
                 vm.user = response;
                 $scope.allUsers = response;
                 $scope.userLength = Object.size(response);
@@ -254,9 +257,18 @@
 				$scope.loading = false;
 			});
         };
+        
 
-        $scope.getAll = function(){
-            initController();
+        $scope.getAll = function(gender){
+            getAll(gender);
+        }
+
+        function getAll(gender) {
+            if (gender == 'all'){
+                initController();
+            } else {
+                getAllByGender(gender);
+            }
         }
 
         /*
@@ -841,7 +853,7 @@
             }).catch(function (error) {
                 FlashService.Error(error);
             });
-            initController();
+            getAll($scope.genderTab);
         }
 
         /*
